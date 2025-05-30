@@ -1,20 +1,17 @@
-package edu.abhs.hotProperties.initializers;
+package edu.abhs.hotProperties.initializer;
 
-
-import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.entities.PropertyImage;
 import edu.abhs.hotProperties.entities.User;
-import edu.abhs.hotProperties.repositories.PropertyImageRepository;
-import edu.abhs.hotProperties.repositories.PropertyRepository;
-import edu.abhs.hotProperties.repositories.UserRepository;
+import edu.abhs.hotProperties.entities.Property;
+import edu.abhs.hotProperties.repository.PropertyImageRepository;
+import edu.abhs.hotProperties.repository.PropertyRepository;
+import edu.abhs.hotProperties.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
+import java.io.File;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class DataInitializer {
@@ -22,12 +19,15 @@ public class DataInitializer {
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
     private final PropertyImageRepository propertyImageRepository;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Autowired
-    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository) {
+    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.propertyImageRepository = propertyImageRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
@@ -36,27 +36,26 @@ public class DataInitializer {
 
             User u1 = new User("Buyer",
                     "B",
-                    "buyer",
-                    "buyer123",
+                    passwordEncoder.encode("buyer123"),
                     "buyer@email.com",
-                    LocalDateTime.now(),
                     User.Role.BUYER);
 
             User u2 = new User("Admin",
                     "A",
-                    "admin",
-                    "admin123",
+                    passwordEncoder.encode("admin123"),
                     "admin@email.com",
-                    LocalDateTime.now(),
                     User.Role.ADMIN);
 
             User u3 = new User("Agent",
                     "Ag",
-                    "agent",
-                    "agent123",
+                    passwordEncoder.encode("agent123"),
                     "agent@email.com",
-                    LocalDateTime.now(),
                     User.Role.AGENT);
+
+            userRepository.saveAll(List.of(u1, u2, u3));
+            System.out.println("Initial users, inserted successfully");
+        }
+        if (propertyRepository.count() == 0 && propertyImageRepository.count() == 0) {
 
             Property p1 = new Property("3818 N Christiana Ave",
                     1025000,
@@ -160,274 +159,32 @@ public class DataInitializer {
                     "Chicago IL 60613",
                     2869);
 
+            List<Property> properties = List.of(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17);
+            propertyRepository.saveAll(properties);
 
-            PropertyImage pi1 = new PropertyImage("1743384015245_6a9c75de2a1a1b59e7ffb67666e34f21-cc_ft_960.webp");
-            PropertyImage pi2 = new PropertyImage("1743384015263_c8b7f3395049c85c63629545f9b7c628-cc_ft_960.webp");
-            PropertyImage pi3 = new PropertyImage("1743384015264_57e9193e3d81780a668bc762f2662ce1-cc_ft_960.webp");
-            PropertyImage pi4 = new PropertyImage("1743384015264_4208506e92354c9bbf08264f52214443-cc_ft_960.webp");
-            PropertyImage pi5 = new PropertyImage("1743384015265_feea5afd5f1e1d5ac49cbabb52ab9de0-cc_ft_960.webp");
-            PropertyImage pi6 = new PropertyImage("1743384015266_f1ab08cd9526db6b89869706e2326957-cc_ft_960.webp");
+            // This parses the PropertyImage objects from static/images/PropertyImages and adds them to the repo with the correct property_id (property).
+            // (you need to put PropertyImage folder in resources/static/images)
+            try {
+                File file = new File("src/main/resources/static/images/PropertyImages");
+                File[] imageNames = file.listFiles();
 
-            PropertyImage pi7 = new PropertyImage("1743992061456_5817c06a023247878cad80b13437a344-cc_ft_960.webp");
-            PropertyImage pi8 = new PropertyImage("1743992061461_7949f19564896909d78f3fcaff95b1fd-cc_ft_960.webp");
-            PropertyImage pi9 = new PropertyImage("1743992061461_f16b81fd636cc523ace9d3bb0256552d-cc_ft_960.webp");
-            PropertyImage pi10 = new PropertyImage("1743992061462_f727e2747ba462aa10058f56caa3557e-cc_ft_960.webp");
-            PropertyImage pi11 = new PropertyImage("1743992061464_1fd8ed76ab9561d8997f2021f2fa36be-cc_ft_960.webp");
-            PropertyImage pi12 = new PropertyImage("1743992061464_eebaa9c584979606b61e3357c48d8547-cc_ft_960.webp");
-            PropertyImage pi13 = new PropertyImage("1743992061465_30d9ae794d238c468c93c24e75f606ec-cc_ft_960.webp");
+                for (File image : imageNames) {
+                    for (Property property : properties) {
+                        if (property.getTitle().equals(file.getName())) {
 
-            PropertyImage pi14 = new PropertyImage("1743388060456_08d55c9fc87e4f22d67a478fab4c9a03-cc_ft_960.webp");
-            PropertyImage pi15 = new PropertyImage("1743388060457_0164127f87e51ea7a12bd2c305b6c2e0-cc_ft_960.webp");
-            PropertyImage pi16 = new PropertyImage("1743388060457_a7cef31db25ea18719d4733f0b95b223-cc_ft_960.webp");
-            PropertyImage pi17 = new PropertyImage("1743388060457_ee5061af173e2bf0aad53eb5f26cf706-cc_ft_960.webp");
-            PropertyImage pi18 = new PropertyImage("1743388060454_c24b273254041b893ccd6692111b5200-cc_ft_960.webp");
-            PropertyImage pi19 = new PropertyImage("1743388060455_79189db1b8f663642e731eb0b01b5f39-cc_ft_960.webp");
-            PropertyImage pi20 = new PropertyImage("1743388060456_7e771c0fb66cd751539d8d806f0ba148-cc_ft_960.webp");
-
-            PropertyImage pi21 = new PropertyImage("1743301628478_038333ffc0b2ab9b3d4beee098815cd1-cc_ft_960.webp");
-            PropertyImage pi22 = new PropertyImage("1743301628479_e89f81a9e0c787d35f53786a26bf94db-cc_ft_960.webp");
-            PropertyImage pi23 = new PropertyImage("1743301628480_902a62e40dfe6025619ad874c015e85e-cc_ft_960.webp");
-            PropertyImage pi24 = new PropertyImage("1743301628480_4575349ee82303eddef14e866c03d9b6-cc_ft_960.webp");
-            PropertyImage pi25 = new PropertyImage("1743301628481_8e1830db57e8855cc40ab1f82e7b9ddf-cc_ft_960.webp");
-            PropertyImage pi26 = new PropertyImage("1743301628481_7445e48b3fef12706bda016fed9ead39-cc_ft_960.webp");
-            PropertyImage pi27 = new PropertyImage("1743301628481_9945c420965cf28e99533c53f919c2a8-cc_ft_960.webp");
-            PropertyImage pi28 = new PropertyImage("1743301628482_4f93514962a2d6df83b282589ace1ba1-cc_ft_960.webp");
-
-            PropertyImage pi29 = new PropertyImage("1743384199295_4542114353ac37b6202a6de33663be81-cc_ft_960.webp");
-            PropertyImage pi30 = new PropertyImage("1743384199295_a55bd3c3af04d6f7ac3807af405524ae-cc_ft_960.webp");
-            PropertyImage pi31 = new PropertyImage("1743384199296_8dc571649cf4b989fd10e1fda3aa1419-cc_ft_960.webp");
-            PropertyImage pi32 = new PropertyImage("1743384199296_39dc5cf00542133c4df96861e635f7a7-cc_ft_960.webp");
-            PropertyImage pi33 = new PropertyImage("1743384199296_210172c41c26c079efc76d51d593a82b-cc_ft_960.webp");
-            PropertyImage pi34 = new PropertyImage("1743384199297_4fe190c6aef86b5e0aaa0b4fe47ae719-cc_ft_960.webp");
-            PropertyImage pi35 = new PropertyImage("1743384199297_055b93946d56b5a3f21453e95116e71c-cc_ft_960.webp");
-
-            PropertyImage pi36 = new PropertyImage("1743992242724_0ca592349432a46fba99299c74267220-cc_ft_960.webp");
-            PropertyImage pi37 = new PropertyImage("1743992242724_2ae7e5f1f89fcfb262f2088c53cce3b9-cc_ft_960.webp");
-            PropertyImage pi38 = new PropertyImage("1743992242725_50e9c8299c9368422483ba4dff253098-cc_ft_960.webp");
-            PropertyImage pi39 = new PropertyImage("1743992242725_54ea1b70cede8d606beecadf2b9c2f28-cc_ft_960.webp");
-            PropertyImage pi40 = new PropertyImage("1743992242726_9ff251395613a68239c6820f4daea338-cc_ft_960.webp");
-            PropertyImage pi41 = new PropertyImage("1743992242727_1376aeceae202e2bad77219dc8190cdd-cc_ft_960.webp");
-
-            PropertyImage pi42 = new PropertyImage("1743302255449_cf806ba37db343ee7f0ee51d39252135-cc_ft_960.webp");
-            PropertyImage pi43 = new PropertyImage("1743302255450_02be17d8f9ac024cf482014e592e180d-cc_ft_960.webp");
-            PropertyImage pi44 = new PropertyImage("1743302255450_4cbdcdfef821e5dc91e7751514c6d68e-cc_ft_960.webp");
-            PropertyImage pi45 = new PropertyImage("1743302255450_f957316337dc3918f40f7cd7383eecbf-cc_ft_960.webp");
-            PropertyImage pi46 = new PropertyImage("1743302255451_8eb8c6eceb0e3bea3cdb9c2e9793d4e5-cc_ft_960.webp");
-            PropertyImage pi47 = new PropertyImage("1743302255451_77be1d31e0ad3589d2bb47f7f85b924f-cc_ft_960.webp");
-            PropertyImage pi48 = new PropertyImage("1743302255451_b31d1be54f40e40242f5d5596252db0c-cc_ft_960.webp");
-
-            PropertyImage pi49 = new PropertyImage("1743301809073_677b8026a3951bb4dddd94cc39af7c39-cc_ft_960 (1).webp");
-            PropertyImage pi50 = new PropertyImage("1743301809073_6002383c7e5af148dbf7865834c9d978-cc_ft_960.webp");
-            PropertyImage pi51 = new PropertyImage("1743301809074_4619a01b6891e0801336c0705ab189ef-cc_ft_960.webp");
-            PropertyImage pi52 = new PropertyImage("1743301809074_a12a500ba769699bc054ea0ce703e52c-cc_ft_960.webp");
-            PropertyImage pi53 = new PropertyImage("1743301809074_cac06501b21dfee3dc57906057bcc348-cc_ft_960.webp");
-            PropertyImage pi54 = new PropertyImage("1743301809075_0e9427333a0d908161e5147b7dc123ee-cc_ft_960.webp");
-
-            PropertyImage pi55 = new PropertyImage("1743281271085_cbd7103d0fafdb12e7debbc0654493bd-cc_ft_960.webp");
-            PropertyImage pi56 = new PropertyImage("1743281271086_3d168d1493c8661b69c87cc55d6099d1-cc_ft_960.webp");
-            PropertyImage pi57 = new PropertyImage("1743281271086_5d44f3575f04874e53743a5c1718ca88-cc_ft_960.webp");
-            PropertyImage pi58 = new PropertyImage("1743281271087_2c9fade74be1b69ca7c7cb273c6c87c2-cc_ft_960.webp");
-            PropertyImage pi59 = new PropertyImage("1743281271087_79cac6350cb9217e7a6bcc8f5d5fd0cb-cc_ft_960.webp");
-            PropertyImage pi60 = new PropertyImage("1743281271087_978969480d1b891918b174eb749a651d-cc_ft_960.webp");
-            PropertyImage pi61 = new PropertyImage("1743281271088_0bd9f82b77c94edc082bb39408007973-cc_ft_960.webp");
-
-            PropertyImage pi62 = new PropertyImage("1743302048220_02499d07b48dce810e28dea78a5e026f-cc_ft_960.webp");
-            PropertyImage pi63 = new PropertyImage("1743302048220_d420e4ce5c58d33e2b36b4e90fb5c56d-cc_ft_960.webp");
-            PropertyImage pi64 = new PropertyImage("1743302048221_88838f14535dd65a2cb177a59669b281-cc_ft_960.webp");
-            PropertyImage pi65 = new PropertyImage("1743302048223_eddb73c7118ac6f157503cc1218ab8e5-cc_ft_960.webp");
-            PropertyImage pi66 = new PropertyImage("1743302048225_4d8c640575f652c14501094280ca42b3-cc_ft_960.webp");
-            PropertyImage pi67 = new PropertyImage("1743302048225_53c34c82cf7f09148a98c1ad4bf8fdd2-cc_ft_960.webp");
-
-            PropertyImage pi68 = new PropertyImage("1743384392201_24210295f2d05ba693adc25d1c896206-cc_ft_960.webp");
-            PropertyImage pi69 = new PropertyImage("1743384392202_2b4d95e3030041acff0ccb66cd4bfd36-cc_ft_960.webp");
-            PropertyImage pi70 = new PropertyImage("1743384392202_2b59c2456dce88ba36b7bcfbbdf0f85f-cc_ft_960.webp");
-            PropertyImage pi71 = new PropertyImage("1743384392202_4a12de4cf2f21dea63628868986ae31b-cc_ft_960.webp");
-            PropertyImage pi72 = new PropertyImage("1743384392203_4c55a56e9e17f85f2ec6eeb0086ec5d0-cc_ft_960.webp");
-            PropertyImage pi73 = new PropertyImage("1743384392203_240789fdb44d85f5c5a8a72de4db20e3-cc_ft_960.webp");
-            PropertyImage pi74 = new PropertyImage("1743384392204_db5691f807cab5e67c31f141fc3f6ac7-cc_ft_960.webp");
-
-            PropertyImage pi75 = new PropertyImage("1743301338472_33a4f1cbdd5fb813e4696238006b7882-cc_ft_960.webp");
-            PropertyImage pi76 = new PropertyImage("1743301338476_0ce73eb7b856382475f51f49f79beb89-cc_ft_960.webp");
-            PropertyImage pi77 = new PropertyImage("1743301338476_78dd178cbaaa151772e98ddc8f157b61-cc_ft_960.webp");
-            PropertyImage pi78 = new PropertyImage("1743301338477_28dffdb73243072752daf3888d06e47a-cc_ft_960.webp");
-            PropertyImage pi79 = new PropertyImage("1743301338477_cbf60776fd416a41ea66240135d6edbe-cc_ft_960.webp");
-            PropertyImage pi80 = new PropertyImage("1743301338477_dd32b92ceb6814bda0aa4e5b072887df-cc_ft_960.webp");
-
-            PropertyImage pi81 = new PropertyImage("1743281104544_cc41995923da491a77509ba3c594dfbd-cc_ft_960.webp");
-            PropertyImage pi82 = new PropertyImage("1743281104544_dcfa791d9108ba2825906026396b1b06-cc_ft_960.webp");
-            PropertyImage pi83 = new PropertyImage("1743281104545_3d2b506d9411b5465ba886b4f8a5e236-cc_ft_960.webp");
-            PropertyImage pi84 = new PropertyImage("1743281104545_97f285258a02cc3c9fb1d378463266ce-cc_ft_960.webp");
-            PropertyImage pi85 = new PropertyImage("1743281104545_79540e8ca9aafe743e3c504a3fe95750-cc_ft_960.webp");
-
-            PropertyImage pi86 = new PropertyImage("1743301467429_a0596dd36e88cac9a64f35eaf1d8ce71-cc_ft_960.webp");
-            PropertyImage pi87 = new PropertyImage("1743301467429_e433d1c2b82fd5ca765a330996a33b8b-cc_ft_960.webp");
-            PropertyImage pi88 = new PropertyImage("1743301467430_383e06b5c9eaa15362db824c9315bb48-cc_ft_960.webp");
-            PropertyImage pi89 = new PropertyImage("1743301467430_445fa915603a0172fcc33ab2f4bffff5-cc_ft_960.webp");
-            PropertyImage pi90 = new PropertyImage("1743301467430_35771fac6f65e303b0aae04797434661-cc_ft_960.webp");
-
-            PropertyImage pi91 = new PropertyImage("1743280986563_8c1815366539cf90fd6cb38dbb1b1e1e-cc_ft_960.webp");
-            PropertyImage pi92 = new PropertyImage("1743280986566_3bd01c92edfab81e6ef7702df5c5f315-cc_ft_960.webp");
-            PropertyImage pi93 = new PropertyImage("1743280986566_419c22f5dd1ddc1a6d861df85c941db9-cc_ft_960.webp");
-            PropertyImage pi94 = new PropertyImage("1743280986569_e0eeefdb3c45f55b99d1ad272a9595c3-cc_ft_960.webp");
-            PropertyImage pi95 = new PropertyImage("1743280986573_b48577b143d2f0c5b79a4bb14dd7ec0d-cc_ft_960.webp");
-
-            PropertyImage pi96 = new PropertyImage("1743387717563_1b52d279e85865c7f0bf096a15389cde-cc_ft_960.webp");
-            PropertyImage pi97 = new PropertyImage("1743387717569_3bd5e5aa31981523260b921b90147af1-cc_ft_960.webp");
-            PropertyImage pi98 = new PropertyImage("1743387717569_ef8752d95d4a035171a9e68ea1b931b3-cc_ft_960.webp");
-            PropertyImage pi99 = new PropertyImage("1743387717570_a1002e32f5837499940cb388fd9564e9-cc_ft_960.webp");
-            PropertyImage pi100 = new PropertyImage("1743387717571_fb9d6f09ff74869a68e130639b4a6656-cc_ft_960.webp");
-            PropertyImage pi101 = new PropertyImage("1743387717572_4e76c9ea759f17c5117146b8e3767d59-cc_ft_960.webp");
-
-            PropertyImage pi102 = new PropertyImage("1743387872830_3d90623319bb81e1fc9981458177dfbe-cc_ft_960.webp");
-            PropertyImage pi103 = new PropertyImage("1743387872831_52a0b90d5ad6706b893bde00716c33d3-cc_ft_960.webp");
-            PropertyImage pi104 = new PropertyImage("1743387872832_1dbb545e72db17e3e4f71782d804f150-cc_ft_960.webp");
-            PropertyImage pi105 = new PropertyImage("1743387872832_02f4e0b3bf227e23803789cc22b57a51-cc_ft_960.webp");
-            PropertyImage pi106 = new PropertyImage("1743387872832_09ed819d77efdcc01b00c5aabbaea793-cc_ft_960.webp");
-            PropertyImage pi107 = new PropertyImage("1743387872833_9f3d06c29900d8b66f2b0cb1711621e6-cc_ft_960.webp");
-            PropertyImage pi108 = new PropertyImage("1743387872833_d6d09d6b56a9ada275beac058cd819ea-cc_ft_960.webp");
-
-
-            p10.getPropertyImages().add((pi1));
-            p10.getPropertyImages().add((pi2));
-            p10.getPropertyImages().add((pi3));
-            p10.getPropertyImages().add((pi4));
-            p10.getPropertyImages().add((pi5));
-            p10.getPropertyImages().add((pi6));
-
-            p16.getPropertyImages().add((pi7));
-            p16.getPropertyImages().add((pi8));
-            p16.getPropertyImages().add((pi9));
-            p16.getPropertyImages().add((pi10));
-            p16.getPropertyImages().add((pi11));
-            p16.getPropertyImages().add((pi12));
-            p16.getPropertyImages().add((pi13));
-
-            p15.getPropertyImages().add((pi14));
-            p15.getPropertyImages().add((pi15));
-            p15.getPropertyImages().add((pi16));
-            p15.getPropertyImages().add((pi17));
-            p15.getPropertyImages().add((pi18));
-            p15.getPropertyImages().add((pi19));
-            p15.getPropertyImages().add((pi20));
-
-            p6.getPropertyImages().add((pi21));
-            p6.getPropertyImages().add((pi22));
-            p6.getPropertyImages().add((pi23));
-            p6.getPropertyImages().add((pi24));
-            p6.getPropertyImages().add((pi25));
-            p6.getPropertyImages().add((pi26));
-            p6.getPropertyImages().add((pi27));
-            p6.getPropertyImages().add((pi28));
-
-            p11.getPropertyImages().add((pi29));
-            p11.getPropertyImages().add((pi30));
-            p11.getPropertyImages().add((pi31));
-            p11.getPropertyImages().add((pi32));
-            p11.getPropertyImages().add((pi33));
-            p11.getPropertyImages().add((pi34));
-            p11.getPropertyImages().add((pi35));
-
-            p17.getPropertyImages().add((pi36));
-            p17.getPropertyImages().add((pi37));
-            p17.getPropertyImages().add((pi38));
-            p17.getPropertyImages().add((pi39));
-            p17.getPropertyImages().add((pi40));
-            p17.getPropertyImages().add((pi41));
-
-            p9.getPropertyImages().add((pi42));
-            p9.getPropertyImages().add((pi43));
-            p9.getPropertyImages().add((pi44));
-            p9.getPropertyImages().add((pi45));
-            p9.getPropertyImages().add((pi46));
-            p9.getPropertyImages().add((pi47));
-            p9.getPropertyImages().add((pi48));
-
-            p7.getPropertyImages().add((pi49));
-            p7.getPropertyImages().add((pi50));
-            p7.getPropertyImages().add((pi51));
-            p7.getPropertyImages().add((pi52));
-            p7.getPropertyImages().add((pi53));
-            p7.getPropertyImages().add((pi54));
-
-            p3.getPropertyImages().add((pi55));
-            p3.getPropertyImages().add((pi56));
-            p3.getPropertyImages().add((pi57));
-            p3.getPropertyImages().add((pi58));
-            p3.getPropertyImages().add((pi59));
-            p3.getPropertyImages().add((pi60));
-            p3.getPropertyImages().add((pi61));
-
-            p8.getPropertyImages().add((pi62));
-            p8.getPropertyImages().add((pi63));
-            p8.getPropertyImages().add((pi64));
-            p8.getPropertyImages().add((pi65));
-            p8.getPropertyImages().add((pi66));
-            p8.getPropertyImages().add((pi67));
-
-            p12.getPropertyImages().add((pi68));
-            p12.getPropertyImages().add((pi69));
-            p12.getPropertyImages().add((pi70));
-            p12.getPropertyImages().add((pi71));
-            p12.getPropertyImages().add((pi72));
-            p12.getPropertyImages().add((pi73));
-            p12.getPropertyImages().add((pi74));
-
-            p4.getPropertyImages().add((pi75));
-            p4.getPropertyImages().add((pi76));
-            p4.getPropertyImages().add((pi77));
-            p4.getPropertyImages().add((pi78));
-            p4.getPropertyImages().add((pi79));
-            p4.getPropertyImages().add((pi80));
-
-            p2.getPropertyImages().add((pi81));
-            p2.getPropertyImages().add((pi82));
-            p2.getPropertyImages().add((pi83));
-            p2.getPropertyImages().add((pi84));
-            p2.getPropertyImages().add((pi85));
-
-            p5.getPropertyImages().add((pi86));
-            p5.getPropertyImages().add((pi87));
-            p5.getPropertyImages().add((pi88));
-            p5.getPropertyImages().add((pi89));
-            p5.getPropertyImages().add((pi90));
-
-            p1.getPropertyImages().add((pi91));
-            p1.getPropertyImages().add((pi92));
-            p1.getPropertyImages().add((pi93));
-            p1.getPropertyImages().add((pi94));
-            p1.getPropertyImages().add((pi95));
-
-            p13.getPropertyImages().add((pi96));
-            p13.getPropertyImages().add((pi97));
-            p13.getPropertyImages().add((pi98));
-            p13.getPropertyImages().add((pi99));
-            p13.getPropertyImages().add((pi100));
-            p13.getPropertyImages().add((pi101));
-
-            p14.getPropertyImages().add((pi102));
-            p14.getPropertyImages().add((pi103));
-            p14.getPropertyImages().add((pi104));
-            p14.getPropertyImages().add((pi105));
-            p14.getPropertyImages().add((pi106));
-            p14.getPropertyImages().add((pi107));
-            p14.getPropertyImages().add((pi108));
-
-            userRepository.saveAll(List.of(u1, u2, u3));
-            propertyRepository.saveAll(List.of(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17));
-            propertyImageRepository.saveAll(List.of(pi1, pi2, pi3, pi4, pi5, pi6, pi7, pi8, pi9, pi10,
-                    pi11, pi12, pi13, pi14, pi15, pi16, pi17, pi18, pi19, pi20,
-                    pi21, pi22, pi23, pi24, pi25, pi26, pi27, pi28, pi29, pi30,
-                    pi31, pi32, pi33, pi34, pi35, pi36, pi37, pi38, pi39, pi40,
-                    pi41, pi42, pi43, pi44, pi45, pi46, pi47, pi48, pi49, pi50,
-                    pi51, pi52, pi53, pi54, pi55, pi56, pi57, pi58, pi59, pi60,
-                    pi61, pi62, pi63, pi64, pi65, pi66, pi67, pi68, pi69, pi70,
-                    pi71, pi72, pi73, pi74, pi75, pi76, pi77, pi78, pi79, pi80,
-                    pi81, pi82, pi83, pi84, pi85, pi86, pi87, pi88, pi89, pi90,
-                    pi91, pi92, pi93, pi94, pi95, pi96, pi97, pi98, pi99, pi100,
-                    pi101, pi102, pi103, pi104, pi105, pi106, pi107, pi108));
-
-            System.out.println("🟢 Initial users, properties, and property images inserted.");
+                            PropertyImage currImage = new PropertyImage(image.getName());
+                            property.addPropertyImage(currImage);
+                            currImage.setProperty(property);
+                            propertyImageRepository.save(currImage);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Properties, and property images inserted.");
         } else {
+
             System.out.println("🟡 Users, Properties, and Property Images already exist, skipping initialization.");
         }
     }

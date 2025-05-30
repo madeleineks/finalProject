@@ -113,4 +113,5 @@ public class Property {
     public void addPropertyImage(PropertyImage propertyImage) {
         this.propertyImages.add(propertyImage);
     }
+
 }

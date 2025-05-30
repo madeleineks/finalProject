@@ -1,6 +1,7 @@
 package edu.abhs.hotProperties.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,11 +16,12 @@ public class PropertyImage {
 
     @ManyToOne
     @JoinColumn(name = "property_id")
+
     @JsonIgnore
     private Property property;
 
     public PropertyImage() {}
-
+  
     public PropertyImage(String imageFileName) {
         this.imageFileName = imageFileName;
     }
@@ -47,4 +49,12 @@ public class PropertyImage {
     public void setImageFileName(String imageFileName) {
         this.imageFileName = imageFileName;
     }
-}
+
+    public Property getProperty() {
+        return property;
+    }
+
+    public void setProperty(Property property) {
+        this.property = property;
+    }
+

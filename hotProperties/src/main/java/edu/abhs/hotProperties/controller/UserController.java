@@ -54,7 +54,9 @@ public class UserController {
 
     @PreAuthorize("hasRole('AGENT')")
     @GetMapping("/properties/manage")
-    public String home() {
+    public String agentManage(Model model) {
+        User user = authService.getCurrentUser();
+        model.addAttribute("user", user);
         return "manage_properties";
     }
 

@@ -71,3 +71,16 @@ button:hover {
     background-color: #0056b3;
 }
 
+.success {
+    color: green;
+    font-size: 0.95em;
+    margin-bottom: 14px;
+    text-align: center;
+}
+.failure {
+    color: red;
+    font-size: 0.95em;
+    margin-bottom: 14px;
+    text-align: center;
+}
+

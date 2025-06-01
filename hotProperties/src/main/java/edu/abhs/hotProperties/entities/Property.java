@@ -36,7 +36,6 @@ public class Property {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     public Property(String title, double price, String description, String location, Integer size) {
         this.title = title;
         this.price = price;
@@ -44,6 +43,8 @@ public class Property {
         this.location = location;
         this.size = size;
     }
+
+    public Property () {}
 
     public Long getId() {
         return id;
@@ -107,5 +108,9 @@ public class Property {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void addPropertyImage(PropertyImage propertyImage) {
+        this.propertyImages.add(propertyImage);
     }
 }

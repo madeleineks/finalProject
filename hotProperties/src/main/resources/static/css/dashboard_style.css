@@ -1,0 +1,70 @@
+body {
+    padding-top: 100px;
+    font-family: Arial, sans-serif;
+    background-color: rgba(41, 41, 41, 0.09);
+    margin: auto;
+    width: 100%;
+    align-content: center;
+    text-align: center;
+    background-image: url('../images/house-bg.png');
+}
+
+.dash {
+    margin-left: 5%;
+    text-align: left;
+    font-size: 35px;
+}
+
+.header {
+    height: 100px;
+    padding-right: 10px;
+    text-align: right;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.76);
+    position: fixed;
+    top: 0;
+}
+
+.footer{
+    height: 70px;
+    text-align: left;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.76);
+    position: fixed;
+    bottom: 0;
+
+}
+.box1 {
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
+    border: 5px solid grey;
+    border-radius: 30px;
+    padding: 20px;
+    background-color: rgba(241, 241, 241, 0.62);
+
+}
+
+#dash_button {
+    margin-right: 5%;
+    background-color: rgba(0, 86, 179, 0.68);
+    height: 40px;
+    width: 120px;
+    font-size: 18px;
+    border-radius: 7px;
+}
+
+ul.no-bullets {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+}
+
+#logo {
+    height: 70px;
+    width: 70px;
+    position: absolute;
+    left: 30px;
+}

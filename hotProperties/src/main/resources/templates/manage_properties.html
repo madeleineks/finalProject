@@ -16,11 +16,11 @@
     <h1 style="font-size: 55px"> Manage Your Properties </h1>
 
     <div id="manage_box">
-        <table class="manage_table">
+        <table class="manage_table" >
             <thead>
-            <tr>
+            <tr class="top_row">
                 <th>Title</th>
-                <th>Price</th>
+                <th >Price</th>
                 <th>Location</th>
                 <th>Size</th>
                 <th>Images</th>
@@ -32,18 +32,22 @@
 
             <tr th:each="property, props : ${user.getProperty()}">
                 <td th:text="${property.title}"></td>
-                <td th:text="${property.price}"></td>
-                <td th:text="${property.location}"></td>
+                <td th:text="'$' + ${property.price}"></td>
                 <td th:text="${property.location}"></td>
                 <td th:text="${property.size}"></td>
-
+                <td id="pics">
+                    <a th:each="propertyImage : ${property.getPropertyImages()}" >
+                        <img th:src="@{'../images/' + ${propertyImage.imageFileName}}" alt="property images" width="200" style="border-radius: 20px; padding-left: 15px";  >
+                    </a>
+                </td>
             </tr>
+
 
             </tbody>
         </table>
     </div>
 
-    <div th:replace="fragments :: footer"></div>
+
 </body>
 
 </html>

@@ -2,7 +2,6 @@ package edu.abhs.hotProperties.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class Property {
     @Column(nullable = false)
     private Integer size;
 
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<PropertyImage> propertyImages = new ArrayList<>();
 

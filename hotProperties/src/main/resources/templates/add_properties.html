@@ -17,23 +17,48 @@
 
     <h1>Add new Property</h1>
 
-    <form method="post" th:action="@{/properties/add}" th:object="${property}">
-        <label>Enter Property Info</label>
-        <label for="title">Title</label>
-        <input id="title" th:field="*{title}" type="text"/>
-        <label for="size">size</label>
-        <input id="size" th:field="*{size}" type="text"/>
-        <label for="price">price</label>
-        <input id="price" th:field="*{price}" type="text"/>
-        <label for="location">location</label>
-        <input id="location" th:field="*{location}" type="text"/>
-        <label for="description">description</label>
-        <input id="description" th:field="*{description}" type="text"/>
+    <div class="box1">
+        <form id="addProp" method="post" th:action="@{/properties/add}" th:object="${property}" enctype="multipart/form-data">
 
-        <button type="submit">Add</button>
-    </form>
+            <div class="inp_field">
+                <label for="title">Title</label>
+                <br>
+                <input id="title" th:field="*{title}" type="text"/>
+            </div>
 
-    <div th:replace="fragments :: footer"></div>
+            <div class="inp_field">
+                <label for="size">Size</label>
+                <br>
+                <input id="size" th:field="*{size}" type="text"/>
+            </div>
+
+            <div class="inp_field">
+                <label for="price">Price</label>
+                <br>
+                <input id="price" th:field="*{price}" type="text"/>
+            </div>
+
+            <div class="inp_field">
+                <label for="location">Location</label>
+                <br>
+                <input id="location" th:field="*{location}" type="text"/>
+            </div>
+
+            <div class="inp_field">
+                <label for="description">Description</label>
+                <br>
+                <input id="description" th:field="*{description}" type="text"/>
+            </div>
+
+            <br>
+            <label for="file">Choose an image:</label>
+            <input type="file" name="file" id="file" multiple accept="image/*"/>
+            <br>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+
+
 </body>
 
 </html>

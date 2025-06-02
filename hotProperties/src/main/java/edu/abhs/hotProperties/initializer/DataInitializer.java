@@ -6,6 +6,7 @@ import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.repository.PropertyImageRepository;
 import edu.abhs.hotProperties.repository.PropertyRepository;
 import edu.abhs.hotProperties.repository.UserRepository;
+import edu.abhs.hotProperties.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,14 +21,16 @@ public class DataInitializer {
     private final PropertyRepository propertyRepository;
     private final PropertyImageRepository propertyImageRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
 
     @Autowired
-    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, PasswordEncoder passwordEncoder) {
+    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, PasswordEncoder passwordEncoder, UserService userService) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.propertyImageRepository = propertyImageRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     @PostConstruct

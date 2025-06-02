@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface UserService {
     void prepareDashboardModel(Model model);
+    void addedProperty(Property property);
     List<Property> getProperties(User user);
-    void addProperty(Property property);
 }

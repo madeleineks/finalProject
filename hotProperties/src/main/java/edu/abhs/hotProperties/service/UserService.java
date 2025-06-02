@@ -9,7 +9,8 @@ import java.util.List;
 public interface UserService {
     void prepareDashboardModel(Model model);
     List<Property> getProperties(User user);
-    void addProperty(Property property);
+    void addedProperty(Property property);
     boolean emailExists(String email);
     void saveUser(User user);
+
 }

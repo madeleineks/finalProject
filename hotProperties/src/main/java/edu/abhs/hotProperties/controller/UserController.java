@@ -2,6 +2,7 @@ package edu.abhs.hotProperties.controller;
 
 import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.entities.User;
+import edu.abhs.hotProperties.service.PropertyService;
 import edu.abhs.hotProperties.service.UserService;
 import edu.abhs.hotProperties.service.AuthService;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +16,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -22,12 +30,14 @@ public class UserController {
     UserService userService;
     AuthService authService;
     PasswordEncoder passwordEncoder;
+    PropertyService propertyService;
 
     @Autowired
-    public UserController(UserService userService, AuthService authService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, AuthService authService, PasswordEncoder passwordEncoder, PropertyService propertyService) {
         this.userService = userService;
         this.authService = authService;
         this.passwordEncoder = passwordEncoder;
+        this.propertyService = propertyService;
     }
 
     @GetMapping("/login")
@@ -115,15 +125,30 @@ public class UserController {
 
     @PreAuthorize("hasRole('AGENT')")
     @GetMapping("/properties/add")
-    public String add(Model model) {
+    public String showAddProperties(Model model) {
         model.addAttribute("property", new Property());
         return "add_properties";
     }
 
     @PreAuthorize("hasRole('AGENT')")
     @PostMapping("/properties/add")
-    public String processAdd(@ModelAttribute("property") Property property) {
-        userService.addProperty(property);
-        return "manage_properties";
+    public String addProperty(@ModelAttribute("property") Property property, @RequestParam(value = "file", required = false)
+    List<MultipartFile> files, Model model) throws IOException {
+        if (files.isEmpty()) {
+            model.addAttribute("errorMessage", "No images added");
+            return "add_properties";
+        }
+
+        for(MultipartFile file: files) {
+            Path destination = Paths.get("src/main/resources/static/images", file.getOriginalFilename());
+            file.transferTo(destination);
+            model.addAttribute("imagePath", "/images/" + file.getOriginalFilename());
+            model.addAttribute("message", "Upload successful!");
+
+            userService.addedProperty(property);
+            propertyService.addProperty(property);
+            propertyService.addPropertyWithImage(property, file.getOriginalFilename());
+        }
+        return "add_properties";
     }
 }

@@ -39,12 +39,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addProperty(Property property) {
+    public void addedProperty(Property property) {
         User user = getCurrentUserContext().user();
-        property.setUser(user);
-        propertyRepository.save(property);
         user.addProperty(property);
-        System.out.println(user.getEmail());
+        property.setUser(user);
     }
 
     @Override

@@ -12,4 +12,6 @@ public interface AuthService {
     public Cookie loginAndCreateJwtCookie(User user) throws BadCredentialsException;
 
     void clearJwtCookie(HttpServletResponse response);
+
+    User getCurrentUser();
 }

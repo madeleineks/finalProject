@@ -6,13 +6,25 @@ body {
     width: 100%;
     align-content: center;
     text-align: center;
-    background-image: url('../images/house-bg.png');
+    background-image:  url('../images/house-bg.png');
 }
 
 .dash {
     margin-left: 5%;
     text-align: left;
-    font-size: 35px;
+    font-size: 45px;
+}
+
+#roleString{
+    text-align: left;
+    font-size: 25px;
+    color: rgba(255, 0, 0, 0.75);
+}
+
+#acc_role {
+    margin-left: 5%;
+    font-size: 18px;
+    text-align: left;
 }
 
 .header {
@@ -32,39 +44,101 @@ body {
     background-color: rgba(255, 255, 255, 0.76);
     position: fixed;
     bottom: 0;
-
+    margin-left: 5px;
 }
 .box1 {
     margin: 0 auto;
-    width: 50%;
+    width: 40%;
     text-align: center;
-    border: 5px solid grey;
-    border-radius: 30px;
+    border-radius: 10px;
     padding: 20px;
-    background-color: rgba(241, 241, 241, 0.62);
+    background-color: rgb(241, 241, 241);
+    border: 3px solid rgba(0, 74, 161, 0.66);
 
 }
 
 #dash_button {
     margin-right: 5%;
-    background-color: rgba(0, 86, 179, 0.68);
+    position: absolute;
+    right: 50px;
+    top: 20px;
+    background-color: rgb(43, 109, 179);
     height: 40px;
     width: 120px;
     font-size: 18px;
     border-radius: 7px;
+    color: rgb(255, 255, 255);
+    border: 0;
+
 }
 
-ul.no-bullets {
+#logout_button {
+    background-color: rgb(197, 15, 15);
+    height: 40px;
+    width: 90px;
+    font-size: 18px;
+    border-radius: 7px;
+    color: rgb(255, 255, 255);
+    border: 0;
+}
+
+.no-bullets {
     list-style-type: none;
     padding-left: 0;
-    margin: 0;
-    font-size: 20px;
+    margin: auto;
+    width: 300px;
+
+    font-size: 25px;
     font-family: Arial, sans-serif;
 }
 
+.links{
+    text-decoration: none;
+}
+
 #logo {
-    height: 70px;
-    width: 70px;
+    height: 120px;
+    width: 120px;
     position: absolute;
     left: 30px;
+    top: 1px;
 }
+
+#welcome {
+    font-size: 35px;
+}
+
+#acc_role {
+    font-size: 25px;
+}
+
+th, td {
+    border: 1px solid black;
+    margin:auto;
+    width: 300px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1.2rem;
+    padding-top: 10px;
+}
+.manage_table {
+    width: 1300px;
+    border: 1px solid black;
+    margin: auto;
+}
+
+#manage_box {
+    margin: 0 auto;
+    width: 65%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: rgb(241, 241, 241);
+    border: 3px solid rgba(41, 41, 41, 0.15);
+}
+
+
+
+
+
+

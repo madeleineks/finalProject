@@ -10,4 +10,6 @@ public interface UserService {
     void prepareDashboardModel(Model model);
     List<Property> getProperties(User user);
     void addProperty(Property property);
+    boolean emailExists(String email);
+    void saveUser(User user);
 }

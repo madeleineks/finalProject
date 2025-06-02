@@ -49,7 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = null;
 
-        // ✅ Extract token from cookie (named "jwt")
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("jwt".equals(cookie.getName())) {
@@ -59,7 +58,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // ✅ New: Skip JWT logic if token is missing or empty
         if (token == null || token.trim().isEmpty()) {
             filterChain.doFilter(request, response);
             return;
@@ -70,8 +68,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         if (token != null && jwtUtil.validateToken(token, userDetails)) {
-            //String username = jwtUtil.extractUsername(token);
-            //UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());

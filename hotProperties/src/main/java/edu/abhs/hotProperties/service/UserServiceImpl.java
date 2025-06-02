@@ -39,10 +39,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addedProperty(Property property) {
+    public void addProperty(Property property) {
         User user = getCurrentUserContext().user();
-        user.addProperty(property);
         property.setUser(user);
+        propertyRepository.save(property);
+        user.addProperty(property);
+        System.out.println(user.getEmail());
+    }
+
+    @Override
+    public boolean emailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    @Override
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 
     private CurrentUserContext getCurrentUserContext() {

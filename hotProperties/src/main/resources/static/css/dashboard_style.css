@@ -1,13 +1,13 @@
 body {
-    padding-top: 100px;
+    padding-top: 10%;
     padding-bottom: 100px;
-    font-family: Arial, sans-serif;
-    background-color: rgba(41, 41, 41, 0.09);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: auto;
     width: 100%;
     align-content: center;
     text-align: center;
-    background-image:  url('../images/house-bg.png');
+    background-image: url('../images/house-bg.png');
+
 }
 
 .dash {
@@ -17,14 +17,16 @@ body {
 }
 
 #roleString{
+
     text-align: left;
-    font-size: 25px;
-    color: rgba(255, 0, 0, 0.75);
+    font-size: 20px;
+    color: rgb(62, 152, 5);
 }
 
 #acc_role {
-    margin-left: 5%;
-    font-size: 18px;
+    padding-top: 35px;
+    padding-left: 10%;
+    font-size: 5px;
     text-align: left;
 }
 
@@ -36,17 +38,19 @@ body {
     background-color: rgba(255, 255, 255, 0.76);
     position: absolute;
     top: 0;
+    border: solid 1px;
+    color: rgba(85, 85, 85, 0.44);
 }
 
 .box1 {
-    margin: 0 auto;
-    width: 40%;
-    text-align: center;
-    border-radius: 10px;
-    padding: 20px;
-    background-color: rgb(241, 241, 241);
-    border: 3px solid rgba(0, 74, 161, 0.66);
 
+    margin: 0 auto;
+    width: 28%;
+    text-align: center;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 }
 
 #dash_button {
@@ -54,14 +58,36 @@ body {
     position: absolute;
     right: 50px;
     top: 20px;
+}
+
+.blue_button {
     background-color: rgb(43, 109, 179);
     height: 40px;
     width: 120px;
     font-size: 18px;
-    border-radius: 7px;
+    border: none;
+    border-radius: 4px;
     color: rgb(255, 255, 255);
     border: 0;
+}
 
+.blue_button:hover {
+    background-color: rgb(30, 76, 124);
+}
+
+.green_button {
+    background-color: rgb(34, 129, 29);
+    height: 40px;
+    width: 120px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    color: rgb(255, 255, 255);
+    border: 0;
+}
+
+.green_button:hover {
+    background-color: rgb(22, 85, 19);
 }
 
 #logout_button {
@@ -69,23 +95,42 @@ body {
     height: 40px;
     width: 90px;
     font-size: 18px;
-    border-radius: 7px;
+    border: none;
+    border-radius: 4px;
     color: rgb(255, 255, 255);
     border: 0;
 }
 
-.no-bullets {
-    list-style-type: none;
-    padding-left: 0;
-    margin: auto;
-    width: 300px;
+#logout_button:hover {
+    background-color: rgb(161, 15, 15);
+}
 
-    font-size: 25px;
+#divider_line {
+    width: 80%;
+    height: 1%;
+    border: solid 1px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.53);
+}
+
+.no-bullets {
+
+    padding-left: 10%;
+    text-align: left;
+    list-style-type: none;
+    width: 300px;
+    font-size: 21px;
     font-family: Arial, sans-serif;
 }
 
-.links{
+#my_profile, #manage_props, #add_props, #message {
     text-decoration: none;
+
+}
+
+#my_profile:hover, #my_profile:hover,
+#manage_props:hover, #add_props:hover,
+#message:hover {
+    text-decoration: underline;
 }
 
 #logo {
@@ -98,6 +143,8 @@ body {
 
 #welcome {
     font-size: 35px;
+    padding: 25px;
+
 }
 
 #acc_role {
@@ -110,22 +157,22 @@ th, td {
     width: 500px;
     text-align: left;
     vertical-align: top;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-family: Arial, sans-serif;
     padding: 5px;
 }
 
 th {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
 }
 
 #manage_box {
     margin: 0 auto;
     width: 50%;
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 20px;
-    background-color: rgb(241, 241, 241);
-    border: 3px solid rgba(41, 41, 41, 0.15);
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.33);
 
 }
 
@@ -136,15 +183,17 @@ th {
 
 .footer{
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.76);
-    height: 70px;
+    background-color: rgb(255, 255, 255);
+    height: 100px;
     position: absolute;
     text-align: left;
     bottom: 0;
+    border: solid 1px;
+    color: rgba(85, 85, 85, 0.47);
 }
 
 .top_row {
-    background-color: rgba(16, 103, 200, 0.68);
+    background-color: rgba(136, 130, 130, 0.32);
     height: 50px;
     text-align: center;
 }
@@ -157,15 +206,53 @@ th {
     padding: 10px;
     text-align: start;
     width: 100%;
-    font-size: 30px;
-    font-family: bold, sans-serif;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
 
 }
 #addProp {
     width: 100%;
     margin: auto;
-
 }
+
+.inp_box {
+    width: 95%;
+    height:28px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+}
+
+.box2 {
+    margin: 0 auto;
+    width: 25%;
+    text-align: center;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.29);
+    padding: 15px 15px 20px 15px;
+}
+
+.success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.failure {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+#prop_button {
+    width: 95%;
+}
+
+
 
 
 

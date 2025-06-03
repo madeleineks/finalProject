@@ -7,6 +7,7 @@ import edu.abhs.hotProperties.service.UserService;
 import edu.abhs.hotProperties.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -40,7 +41,7 @@ public class UserController {
         this.propertyService = propertyService;
     }
 
-    @GetMapping("/login")
+    @GetMapping({"/login", "/"})
     public String login(Model model) {
         model.addAttribute("user", new User());
         return "login";
@@ -130,25 +131,34 @@ public class UserController {
         return "add_properties";
     }
 
+    @Transactional
     @PreAuthorize("hasRole('AGENT')")
     @PostMapping("/properties/add")
     public String addProperty(@ModelAttribute("property") Property property, @RequestParam(value = "file", required = false)
     List<MultipartFile> files, Model model) throws IOException {
-        if (files.isEmpty()) {
-            model.addAttribute("errorMessage", "No images added");
+
+        if (files.isEmpty() || property == null) {
+            model.addAttribute("fail_message", "Could not add Property. Please try again.");
             return "add_properties";
         }
 
         for(MultipartFile file: files) {
-            Path destination = Paths.get("src/main/resources/static/images", file.getOriginalFilename());
-            file.transferTo(destination);
-            model.addAttribute("imagePath", "/images/" + file.getOriginalFilename());
-            model.addAttribute("message", "Upload successful!");
+            if (file.isEmpty()) {
+                userService.addedProperty(property);
+                propertyService.addProperty(property);
 
-            userService.addedProperty(property);
-            propertyService.addProperty(property);
-            propertyService.addPropertyWithImage(property, file.getOriginalFilename());
+            } else {
+                Path destination = Paths.get("src/main/resources/static/images", file.getOriginalFilename());
+                file.transferTo(destination);
+
+                userService.addedProperty(property);
+                propertyService.addProperty(property);
+                propertyService.addPropertyWithImage(property, file.getOriginalFilename());
+            }
         }
+        model.addAttribute("success_message", "Added new property successfully!");
         return "add_properties";
     }
+
+
 }

@@ -10,32 +10,33 @@
 
   <div th:replace="fragments :: header"></div>
 
-  <h1 class = dash> My Dashboard </h1>
-  <h1 id="acc_role"> Account Role: <span id="roleString" th:text="${user.role} ">  </span>
-  </h1>
-
 
   <div class = box1 >
-    <h1 id="welcome" th:text= "'Welcome to your dashboard, ' + ${user.firstName} + ' ' +  ${user.lastName} + '!' " > </h1>
 
-    <br>
+    <h1 id="welcome" th:utext= " 'Welcome back to your dashboard,<br>' + ${user.firstName} + ' ' +  ${user.lastName} + '!' " > </h1>
+    <h1 id="acc_role" style="font-size: 20px"> Account Role: <span id="roleString" th:text="${user.role} ">  </span>
+    </h1>
+    <hr id="divider_line">
     <ul class="no-bullets">
-      <!--      - TO DO myProfile controller method -->
-      <li class=links >
-        <a th:href="@{/properties/add}" style="color: #0056b3; text-decoration: none">My profile</a>
 
+      <li >
+        <a id="my_profile" th:href="@{/properties/add}" class="tabs" style="color: #0056b3">My profile</a>
       </li>
-      <li class=links th:if="${#authorization.expression('hasRole(''AGENT'')')}">
-        <a th:href="@{/properties/manage}" style="color: #0056b3; text-decoration: none">Manage Properties</a>
+
+      <li  th:if="${#authorization.expression('hasRole(''AGENT'')')}">
+        <a id="manage_props" class="tabs"  th:href="@{/properties/manage}" style="color: #0056b3">Manage Properties</a>
       </li>
-      <li class=links th:if="${#authorization.expression('hasRole(''AGENT'')')}">
-        <a th:href="@{/properties/add}" style="color: #0056b3; text-decoration: none">Add Properties</a>
+
+      <li  th:if="${#authorization.expression('hasRole(''AGENT'')')}">
+        <a id="add_props" class="tabs"  th:href="@{/properties/add}" style="color: #0056b3">Add Properties</a>
       </li>
-      <li class=links th:if="${#authorization.expression('hasAnyRole(''AGENT'', ''BUYER'')')}">
-        <a th:href="@{/properties/add}" style="color: #0056b3; text-decoration: none">Messages</a>
+
+      <li th:if="${#authorization.expression('hasAnyRole(''AGENT'', ''BUYER'')')}">
+        <a id="message" th:href="@{/properties/add}" style="color: #0056b3">Messages</a>
       </li>
 
     </ul>
+    <br>
     <br>
     <br>
 

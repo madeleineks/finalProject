@@ -21,16 +21,13 @@ public class DataInitializer {
     private final PropertyRepository propertyRepository;
     private final PropertyImageRepository propertyImageRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
-
 
     @Autowired
-    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, PasswordEncoder passwordEncoder, UserService userService) {
+    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.propertyImageRepository = propertyImageRepository;
         this.passwordEncoder = passwordEncoder;
-        this.userService = userService;
     }
 
     @PostConstruct

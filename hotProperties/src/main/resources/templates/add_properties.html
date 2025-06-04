@@ -7,26 +7,33 @@
 </head>
 
 <body>
-<div th:replace="fragments :: header"></div>
+    <div th:replace="fragments :: header"></div>
 
-<h1>Add new Property</h1>
-<form method="post" th:action="@{/properties/add}" th:object="${property}">
-    <label>Enter Property Info</label>
-    <label for="title">Title</label>
-    <input id="title" th:field="*{title}" type="text"/>
-    <label for="size">size</label>
-    <input id="size" th:field="*{size}" type="text"/>
-    <label for="price">price</label>
-    <input id="price" th:field="*{price}" type="text"/>
-    <label for="location">location</label>
-    <input id="location" th:field="*{location}" type="text"/>
-    <label for="description">description</label>
-    <input id="description" th:field="*{description}" type="text"/>
+    <header>
+        <form method="get" th:action="@{/dashboard}">
+            <button id="dash_button" type="submit">Dashboard</button>
+        </form>
+    </header>
 
-    <button type="submit">Add</button>
-</form>
+    <h1>Add new Property</h1>
 
-<div th:replace="fragments :: footer"></div>
+    <form method="post" th:action="@{/properties/add}" th:object="${property}">
+        <label>Enter Property Info</label>
+        <label for="title">Title</label>
+        <input id="title" th:field="*{title}" type="text"/>
+        <label for="size">size</label>
+        <input id="size" th:field="*{size}" type="text"/>
+        <label for="price">price</label>
+        <input id="price" th:field="*{price}" type="text"/>
+        <label for="location">location</label>
+        <input id="location" th:field="*{location}" type="text"/>
+        <label for="description">description</label>
+        <input id="description" th:field="*{description}" type="text"/>
+
+        <button type="submit">Add</button>
+    </form>
+
+    <div th:replace="fragments :: footer"></div>
 </body>
 
 </html>

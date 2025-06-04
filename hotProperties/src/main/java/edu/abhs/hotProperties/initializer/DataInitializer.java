@@ -1,8 +1,10 @@
 package edu.abhs.hotProperties.initializer;
 
+import edu.abhs.hotProperties.entities.Favorite;
 import edu.abhs.hotProperties.entities.PropertyImage;
 import edu.abhs.hotProperties.entities.User;
 import edu.abhs.hotProperties.entities.Property;
+import edu.abhs.hotProperties.repository.FavoriteRepository;
 import edu.abhs.hotProperties.repository.PropertyImageRepository;
 import edu.abhs.hotProperties.repository.PropertyRepository;
 import edu.abhs.hotProperties.repository.UserRepository;
@@ -20,19 +22,21 @@ public class DataInitializer {
     private final PropertyRepository propertyRepository;
     private final PropertyImageRepository propertyImageRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FavoriteRepository favoriteRepository;
 
 
     @Autowired
-    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, PasswordEncoder passwordEncoder) {
+    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, FavoriteRepository favoriteRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.propertyImageRepository = propertyImageRepository;
+        this.favoriteRepository = favoriteRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
     public void init() {
-        if (userRepository.count() == 0) {
+        if (userRepository.count() == 0 && propertyRepository.count() == 0 && propertyImageRepository.count() == 0 && favoriteRepository.count() == 0) {
 
             User u1 = new User("Buyer",
                     "B",
@@ -54,8 +58,6 @@ public class DataInitializer {
 
             userRepository.saveAll(List.of(u1, u2, u3));
             System.out.println("Initial users, inserted successfully");
-        }
-        if (propertyRepository.count() == 0 && propertyImageRepository.count() == 0) {
 
             Property p1 = new Property("3818 N Christiana Ave",
                     1025000,
@@ -165,25 +167,37 @@ public class DataInitializer {
             // This parses the PropertyImage objects from static/images/PropertyImages and adds them to the repo with the correct property_id (property).
             // (you need to put PropertyImage folder in resources/static/images)
             try {
-                File file = new File("src/main/resources/static/images/PropertyImages");
-                File[] imageNames = file.listFiles();
 
-                for (File image : imageNames) {
+                File mainDir = new File("src/main/resources/static/images/PropertyImages");
+                File[] titleDir = mainDir.listFiles();
+
+                for (File imageList : titleDir) {
                     for (Property property : properties) {
-                        if (property.getTitle().equals(file.getName())) {
-
-                            PropertyImage currImage = new PropertyImage(image.getName());
-                            property.addPropertyImage(currImage);
-                            currImage.setProperty(property);
-                            propertyImageRepository.save(currImage);
+                        if (property.getTitle().equals(imageList.getName())) {
+                            File[] allFiles = imageList.listFiles();
+                            for(File files : allFiles)
+                            {
+                                PropertyImage currImage = new PropertyImage(files.getName());
+                                property.addPropertyImage(currImage);
+                                currImage.setProperty(property);
+                                propertyImageRepository.save(currImage);
+                            }
                         }
                     }
+
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             System.out.println("Properties, and property images inserted.");
-        } else {
+
+            Favorite f = new Favorite(u1, p1);
+
+            favoriteRepository.save(f);
+            System.out.println("Initial favorites, inserted successfully");
+        }
+        else {
 
             System.out.println("🟡 Users, Properties, and Property Images already exist, skipping initialization.");
         }

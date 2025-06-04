@@ -1,20 +1,33 @@
 package edu.abhs.hotProperties.controller;
 
+import edu.abhs.hotProperties.dtos.JwtResponse;
 import edu.abhs.hotProperties.entities.Property;
+import edu.abhs.hotProperties.entities.PropertyImage;
 import edu.abhs.hotProperties.entities.User;
 import edu.abhs.hotProperties.service.UserService;
 import edu.abhs.hotProperties.service.AuthService;
+import io.jsonwebtoken.io.Encoders;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -125,5 +138,67 @@ public class UserController {
     public String processAdd(@ModelAttribute("property") Property property) {
         userService.addProperty(property);
         return "manage_properties";
+    }
+
+    @GetMapping("/profile")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String viewProfile(Model model) {
+        User user = authService.getCurrentUser();
+        model.addAttribute(user);
+        return "my_profile";
+    }
+
+    @GetMapping("/profile/edit")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String editProfile(Model model) {
+        User user = authService.getCurrentUser();
+        model.addAttribute(user);
+        return "edit_profile";
+    }
+
+    @PostMapping("/profile/edit")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String editProfile(@ModelAttribute("user") User user, Model model) {
+        User u = authService.getCurrentUser();
+
+        model.addAttribute(u);
+        u.setFirstName(user.getFirstName());
+        u.setLastName(user.getLastName());
+
+        if(!u.getEmail().equals(user.getEmail()))
+        {
+            u.setEmail(user.getEmail());
+
+            //Update user data
+            userService.saveUser(u);
+
+            // need to login if email was changed for authentication
+            return "login";
+        }
+
+        //Update user data
+        userService.saveUser(u);
+        return "my_profile";
+    }
+
+    @GetMapping("/properties/list")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String browseProperties(Model model) {
+
+        List<Property> properties = userService.getAllProperties();
+
+        model.addAttribute("properties", properties);
+        model.addAttribute("count", properties.size());
+        return "browse_properties";
+    }
+
+    @GetMapping("/properties/view/{id}")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String viewProperty(@PathVariable Long id, Model model) {
+        User u = authService.getCurrentUser();
+        Property property = userService.getPropertyById(id);
+        model.addAttribute("user", u);
+        model.addAttribute("property", property);
+        return "property_view";
     }
 }

@@ -1,10 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <title> My Profile </title>
+    <link rel="stylesheet" th:href="@{/css/dashboard_style.css}"/>
+</head>
+
+<body >
+
+<div th:replace="fragments :: header"></div>
+
+<form method="get" th:action="@{/dashboard}">
+    <button id="dash_button" type="submit">To Dashboard</button>
+</form>
+
+</h1>
+
+<div class = box1 >
+    <h1 class = profile> My Profile </h1>
+    <h1 class="profile_text" th:text= "'First Name: ' + ${user.firstName}"></h1>
+    <h1 class="profile_text" th:text="'Last Name: ' + ${user.lastName}" ></h1>
+    <h1 class="profile_text" th:text="'Email: ' + ${user.email}" ></h1>
+    <h1 class="profile_text" th:text="'Role: ' + ${user.role}" ></h1>
+    <p><br></p>
+
+    <form method="get" th:action="@{/profile/edit}">
+        <button class="left_button" type="submit">Edit Profile</button>
+    </form>
+
+    <form method="get" th:action="@{/dashboard}">
+        <button class="right_button" type="submit">Back to Dashboard</button>
+    </form>
+</div>
+
+<div th:replace="fragments :: footer"></div>
 </body>
 </html>

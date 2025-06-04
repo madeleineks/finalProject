@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<head>
+  <title> My Profile </title>
+  <link rel="stylesheet" th:href="@{/css/profile_style.css}"/>
+</head>
+
+<body >
+
+<div th:replace="fragments :: header"></div>
+
+<form method="get" th:action="@{/dashboard}">
+  <button id="dash_button" type="submit">To Dashboard</button>
+</form>
+
+</h1>
+
+<div class = box1 >
+
+  <h1>Welcome Back</h1>
+
+  <form method="post" th:action="@{/profile/edit}" th:object="${user}">
+    <label class="profile_text" for="firsname">First Name</label>
+    <input id="firsname" th:field="*{firstName}" type="text" required/>
+
+    <label class="profile_text" for="lastname">Last Name</label>
+    <input id="lastname"  th:field="*{lastName}" type="text" required/>
+
+    <label class="profile_text" for="email">Email</label>
+    <input id="email" th:field="*{email}" type="email" required/><br><br>
+
+    <button class="left_button" type="submit">Save Changes</button>
+  </form>
+
+  <form method="get" th:action="@{/profile}">
+    <button class="right_button" type="submit">Cancel</button>
+  </form>
+</div>
+
+<div th:replace="fragments :: footer"></div>
+</body>
+</html>

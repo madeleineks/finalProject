@@ -64,4 +64,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
         return new CurrentUserContext(user, auth);
     }
+
+    public List<Property> getAllProperties()
+    {
+        return propertyRepository.findAll();
+    }
+
+    public Property getPropertyById(Long id)
+    {
+        return propertyRepository.findPropertyById(id);
+    }
 }

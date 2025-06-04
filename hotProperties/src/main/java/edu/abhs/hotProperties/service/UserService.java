@@ -12,4 +12,8 @@ public interface UserService {
     void addProperty(Property property);
     boolean emailExists(String email);
     void saveUser(User user);
+
+    List<Property> getAllProperties();
+
+    Property getPropertyById(Long id);
 }

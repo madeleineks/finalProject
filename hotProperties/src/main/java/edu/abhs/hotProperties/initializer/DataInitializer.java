@@ -165,19 +165,25 @@ public class DataInitializer {
             // This parses the PropertyImage objects from static/images/PropertyImages and adds them to the repo with the correct property_id (property).
             // (you need to put PropertyImage folder in resources/static/images)
             try {
-                File file = new File("src/main/resources/static/images/PropertyImages");
-                File[] imageNames = file.listFiles();
 
-                for (File image : imageNames) {
+                File mainDir = new File("src/main/resources/static/images/PropertyImages");
+                File[] titleDir = mainDir.listFiles();
+
+                for (File imageList : titleDir) {
                     for (Property property : properties) {
-                        if (property.getTitle().equals(file.getName())) {
-
-                            PropertyImage currImage = new PropertyImage(image.getName());
-                            property.addPropertyImage(currImage);
-                            currImage.setProperty(property);
-                            propertyImageRepository.save(currImage);
+                        if (property.getTitle().equals(imageList.getName())) {
+                            File[] allFiles = imageList.listFiles();
+                            for(File files : allFiles)
+                            {
+                                PropertyImage currImage = new PropertyImage(files.getName());
+                                property.addPropertyImage(currImage);
+                                currImage.setProperty(property);
+                                propertyImageRepository.save(currImage);
+                            }
                         }
                     }
+
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

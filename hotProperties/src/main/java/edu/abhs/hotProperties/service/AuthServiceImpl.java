@@ -24,6 +24,8 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
+    private String decodedPassword;
+
     @Value("${jwt.cookie.expiration}")
     private int jwtCookieExpiration;
 
@@ -39,6 +41,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public JwtResponse authenticateAndGenerateToken(User user) {
+
+        decodedPassword = user.getPassword();
+
         try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
@@ -54,6 +59,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadCredentialsException("Invalid username or password");
         }
     }
+
 
     @Override
     public Cookie loginAndCreateJwtCookie(User user) throws BadCredentialsException {

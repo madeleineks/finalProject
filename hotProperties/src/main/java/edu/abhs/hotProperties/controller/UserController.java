@@ -1,6 +1,8 @@
 package edu.abhs.hotProperties.controller;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import edu.abhs.hotProperties.dtos.JwtResponse;
+import edu.abhs.hotProperties.entities.Favorite;
 import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.entities.PropertyImage;
 import edu.abhs.hotProperties.entities.User;
@@ -20,14 +22,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -113,7 +113,8 @@ public class UserController {
 
     @GetMapping("/dashboard")
     @PreAuthorize("isAuthenticated()")
-    public String showDashboard(Model model) {
+    public String showDashboard(Model model)
+    {
         userService.prepareDashboardModel(model);
         return "dashboard";
     }
@@ -197,8 +198,145 @@ public class UserController {
     public String viewProperty(@PathVariable Long id, Model model) {
         User u = authService.getCurrentUser();
         Property property = userService.getPropertyById(id);
+
+        if(userService.isFavorited(u, property))
+        {
+            model.addAttribute("showRemoveFavoriteButton", true);
+        }
+        else
+        {
+            model.addAttribute("showAddFavoriteButton", true);
+        }
+
         model.addAttribute("user", u);
         model.addAttribute("property", property);
         return "property_view";
+    }
+
+    @GetMapping("/properties/search")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String viewForm(@RequestParam("zipcode") String zipcode, @RequestParam("minSqFt") String minSqFt,
+                           @RequestParam("minPrice") String minPrice, @RequestParam("maxPrice") String maxPrice,
+                           @RequestParam("sort") String sort, Model model) {
+
+        List<Property> properties;
+
+        if(minSqFt.isEmpty())
+        {
+            minSqFt = "0";
+        }
+
+        if(sort.equals("lowToHigh"))
+        {
+            if(minPrice.isEmpty() && maxPrice.isEmpty())
+            {
+                properties = userService.findPropertyByFiltersNoMinMaxAsc(zipcode, minSqFt);
+            }
+            else if(minPrice.isEmpty())
+            {
+                properties = userService.findPropertyByFiltersNoMinAsc(zipcode, minSqFt, maxPrice);
+            }
+            else if(maxPrice.isEmpty())
+            {
+                properties = userService.findPropertyByFiltersNoMaxAsc(zipcode, minSqFt, minPrice);
+            }
+            else
+            {
+                properties = userService.findPropertyWithAllFilters(zipcode, minSqFt, minPrice, maxPrice);
+            }
+        }
+        else
+        {
+            if(minPrice.isEmpty() && maxPrice.isEmpty())
+            {
+                properties = userService.findPropertyByFiltersNoMinMaxDesc(zipcode, minSqFt);
+            }
+            else if(minPrice.isEmpty())
+            {
+                properties = userService.findPropertyByFiltersNoMinDesc(zipcode, minSqFt, maxPrice);
+            }
+            else if(maxPrice.isEmpty())
+            {
+                properties = userService.findPropertyByFiltersNoMaxDesc(zipcode, minSqFt, minPrice);
+            }
+            else
+            {
+                properties = userService.findPropertyWithAllFiltersDesc(zipcode, minSqFt, minPrice, maxPrice);
+            }
+        }
+
+        model.addAttribute("properties", properties);
+        model.addAttribute("count", properties.size());
+        return "browse_properties";
+    }
+
+    @GetMapping("/favorites")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String viewFavorites(Model model) {
+        User u = authService.getCurrentUser();
+
+        List<Favorite> favorites = userService.getUsersFavorites(u);
+        List<Property> properties = new ArrayList<>();
+
+        for(Favorite fav : favorites)
+        {
+            properties.add(fav.getProperty());
+        }
+
+        model.addAttribute("user", u);
+        model.addAttribute("properties", properties);
+        return "favorites";
+    }
+
+    @GetMapping("/favorites/remove/{id}")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String removeFavorite(@PathVariable Long id, Model model) {
+        User u = authService.getCurrentUser();
+
+        Favorite favorite = userService.getSpecificFavorite(u, id);
+
+        userService.removeFavorite(favorite);
+
+        return "redirect:/favorites";
+    }
+
+    @GetMapping("/properties/remove/favorites/{id}")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String removeFavoriteFromPropertyPage(@PathVariable Long id, Model model) {
+        User u = authService.getCurrentUser();
+
+        Favorite favorite = userService.getSpecificFavorite(u, id);
+
+        userService.removeFavorite(favorite);
+
+        return "redirect:/properties/view/" + id;
+    }
+
+    @PostMapping("/favorites/add/{id}")
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    public String addFavorite(@PathVariable Long id, Model model) {
+        User u = authService.getCurrentUser();
+        Property p = userService.getPropertyById(id);
+
+        boolean favorited = false;
+
+        List<Favorite> favorites = userService.getUsersFavorites(u);
+
+        //Check if user already has property favored
+        for(Favorite fav: favorites)
+        {
+            if(fav.getProperty().getId() == id)
+            {
+                favorited = true;
+            }
+        }
+
+        if(!favorited)
+        {
+            Favorite favorite = new Favorite(u, p);
+            userService.addFavorite(favorite);
+        }
+
+        return "redirect:/properties/view/" + id;
     }
 }

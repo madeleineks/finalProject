@@ -16,7 +16,8 @@
     <h1 id="acc_role"> Account Role: <span id="roleString" th:text="${user.role} ">  </span></h1>
 
       <ul class="no-bullets">
-        <li><h1 style="font-size: 30px;"> Buyer DashBoard </h1></li>
+        <li><h1 style="font-size: 30px;" th:if="${#authorization.expression('hasRole(''BUYER'')')}"> Buyer DashBoard </h1></li>
+
         <!--      - TO DO myProfile controller method -->
         <li class=links >
           <a th:href="@{/profile}" style="color: #0056b3; text-decoration: none">My profile</a>
@@ -34,8 +35,11 @@
         <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
           <a th:href="@{/properties/list}" style="color: #0056b3; text-decoration: none">Browse Properties</a>
         </li>
+        <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
+          <a th:href="@{/favorites}" style="color: #0056b3; text-decoration: none" th:text= "'Favorites (' + ${favCount} + ')'">Favorites</a>
+        </li>
 
-      </ul><br><br><br><br><br><br><br><br>
+      </ul><br><br><br><br><br><br><br><br><br><br>
 
       <form method="get" th:action="@{/login}">
          <button id="logout_button" type="submit">Log out</button>

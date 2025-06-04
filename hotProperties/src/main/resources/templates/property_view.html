@@ -18,6 +18,15 @@
 
 <div class = box1 >
   <h1 class="title" style="font-size: 50px" th:text="${property.title}"></h1>
+
+  <form method="get" th:action="@{/properties/remove/favorites/} + ${property.id}" th:if="${showRemoveFavoriteButton}">
+    <button class="remove_fav" type="submit">Remove from Favorites</button>
+  </form>
+
+  <form method="post" th:action="@{/favorites/add/} + ${property.id}" th:if="${showAddFavoriteButton}">
+    <button class="top_right_button" type="submit">Add to Favorites</button>
+  </form><br><br>
+
   <h1 class="property_text" th:text="'Price: &emsp;&emsp;&emsp;&emsp;&nbsp; $' + ${property.price}"></h1>
   <h1 class="property_text" th:text="'Location: &emsp;&emsp;&emsp;' + ${property.location}"></h1>
   <h1 class="property_text" th:text="'Sq. Ft.: &emsp;&emsp;&emsp;&emsp;' + ${property.size}"></h1>

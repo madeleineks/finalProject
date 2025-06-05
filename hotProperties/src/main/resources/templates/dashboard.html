@@ -6,31 +6,45 @@
   <link rel="stylesheet" th:href="@{/css/dashboard_style.css}"/>
 </head>
 
-<body>
+<body >
 
   <div th:replace="fragments :: header"></div>
 
-  <h1 class = dash> My Dashboard </h1>
-
   <div class = box1 >
-    <h2 th:text= "'Welcome to your dashboard, ' + ${user.firstName} + ' ' +  ${user.lastName} + '.' "> </h2>
+    <h1 id="welcome" th:text= "'Welcome to your dashboard, ' + ${user.firstName} + ' ' +  ${user.lastName} + '!' " > </h1>
 
-    <br>
-    <ul class="no-bullets">
-      <li th:if="${#authorization.expression('hasRole(''AGENT'')')}">
-        <a th:href="@{/properties/manage}">Manage Properties</a>
-      </li>
-      <li th:if="${#authorization.expression('hasRole(''AGENT'')')}">
-        <a th:href="@{/properties/add}">Add Properties</a>
-      </li>
-    </ul>
+    <h1 id="acc_role"> Account Role: <span id="roleString" th:text="${user.role} ">  </span></h1>
 
+      <ul class="no-bullets">
+        <li><h1 style="font-size: 30px;" th:if="${#authorization.expression('hasRole(''BUYER'')')}"> Buyer DashBoard </h1></li>
 
+        <!--      - TO DO myProfile controller method -->
+        <li class=links >
+          <a th:href="@{/profile}" style="color: #0056b3; text-decoration: none">My profile</a>
 
+        </li>
+        <li class=links th:if="${#authorization.expression('hasRole(''AGENT'')')}">
+          <a th:href="@{/properties/manage}" style="color: #0056b3; text-decoration: none">Manage Properties</a>
+        </li>
+        <li class=links th:if="${#authorization.expression('hasRole(''AGENT'')')}">
+          <a th:href="@{/properties/add}" style="color: #0056b3; text-decoration: none">Add Properties</a>
+        </li>
+        <li class=links th:if="${#authorization.expression('hasAnyRole(''AGENT'', ''BUYER'')')}">
+          <a th:href="@{/properties/add}" style="color: #0056b3; text-decoration: none">Messages</a>
+        </li>
+        <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
+          <a th:href="@{/properties/list}" style="color: #0056b3; text-decoration: none">Browse Properties</a>
+        </li>
+        <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
+          <a th:href="@{/favorites}" style="color: #0056b3; text-decoration: none" th:text= "'Favorites (' + ${favCount} + ')'">Favorites</a>
+        </li>
 
-    <br>
+      </ul><br><br><br><br><br><br><br><br><br><br>
+
+      <form method="get" th:action="@{/login}">
+         <button id="logout_button" type="submit">Log out</button>
+      </form>
   </div>
-
 
   <div th:replace="fragments :: footer"></div>
 </body>

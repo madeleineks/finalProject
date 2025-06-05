@@ -28,7 +28,7 @@ public class Property {
     @Column(nullable = false)
     private Integer size;
 
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<PropertyImage> propertyImages = new ArrayList<>();
 

@@ -1,14 +1,19 @@
 package edu.abhs.hotProperties.entities;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table (name = "users")
-public class User {
+@Table(name = "users")
+public class User implements UserDetails {
 
     public enum Role {
         ADMIN, AGENT, BUYER
@@ -49,11 +54,41 @@ public class User {
         this.role = role;
         this.createdAt = Timestamp.valueOf(LocalDateTime.now());
     }
-    /*
-        Optional features:
-        - Messages sent and received (for Agents and Buyers).
-        - One-to-many: favorite properties (for Buyers).
-    */
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email; // Using email as username
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
     public String getEmail() {
         return email;
@@ -93,10 +128,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {

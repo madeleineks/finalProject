@@ -15,16 +15,35 @@ body {
     font-size: 45px;
 }
 
-#roleString{
-    text-align: left;
+
+.title {
+    color: rgba(10, 158, 0241, 1);
     font-size: 25px;
-    color: rgba(128,128,128, .75);
+    text-align: left;
+    position: relative;
+    left: 50px;
 }
 
-.profile_text {
-    margin-left: 5%;
-    font-size:25px;
+.property_text {
+    font-size: 20px;
     text-align: left;
+    position: relative;
+    left: 50px;
+}
+
+.filter {
+    font-size: 20px;
+    text-align: left;
+    position: relative;
+}
+
+.description {
+    color: rgba(30, 30, 30, 1);
+    font-size: 20px;
+    text-align: left;
+    position: relative;
+    left: 50px;
+    padding-right: 5%;
 }
 
 .header {
@@ -46,15 +65,26 @@ body {
     bottom: 0;
     margin-left: 5px;
 }
+
 .box1 {
     margin: 20px auto;
-    width: 40%;
+    width: 80%;
     text-align: center;
     border-radius: 10px;
     padding: 20px;
     background-color: rgb(241, 241, 241);
     border: 3px solid rgba(0, 74, 161, 0.66);
     position: relative;
+}
+
+.box1 {
+    margin: 20px auto;
+    width: 80%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: rgb(241, 241, 241);
+    border: 3px solid rgba(0, 74, 161, 0.66);
 }
 
 #dash_button {
@@ -86,7 +116,33 @@ body {
     border: 0;
 }
 
-.right_button {
+.red_button {
+    padding: 10px;
+    background-color: rgb(197, 15, 15);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    float: left;
+    left: 100px;
+    bottom: 10px;
+}
+
+.remove_fav {
+    padding: 10px;
+    background-color: rgb(197, 15, 15);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: absolute;
+    right: 50px;
+}
+
+.top_right_button {
     padding: 10px;
     background-color: #007BFF;
     color: white;
@@ -94,13 +150,11 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    position: relative;
-    float: right;
-    right: 60px;
-    bottom: 40px;
+    position: absolute;
+    right: 50px;
 }
 
-.left_button {
+.button {
     padding: 10px;
     background-color: #007BFF;
     color: white;
@@ -111,24 +165,70 @@ body {
     position: relative;
     float: left;
     left: 50px;
-    bottom: 40px;
+    bottom: 10px;
 }
 
-right_button:hover {
-    background-color: #0056b3;
+.search {
+    margin: 20px;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    float: left;
 }
+
+.clear {
+    margin: 20px;
+    padding: 10px;
+    background-color: #808080;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    float: left;
+}
+
 
 .no-bullets {
     list-style-type: none;
-    padding-left: 20px;
+    padding-left: 0;
     margin: auto;
-    width: 300px;
+    width: 250px;
 
     font-size: 25px;
     font-family: Arial, sans-serif;
-
-    text-align: left;
     float: left;
+}
+
+.dashboard_link {
+    list-style-type: none;
+    padding-left: 0;
+    margin: auto;
+    width: 250px;
+
+    font-size: 25px;
+    font-family: Arial, sans-serif;
+}
+
+.filter_list{
+    list-style-type: none;
+    padding-left:9%;
+    margin: auto;
+    width: 250px;
+
+    font-size: 25px;
+    font-family: Arial, sans-serif;
+    float: left;
+}
+
+.text_field{
+    width: 200px;
 }
 
 .links{
@@ -143,12 +243,26 @@ right_button:hover {
     top: 1px;
 }
 
+.image {
+    height: 225px;
+    width: 275px;
+    position: relative;
+    float: left;
+    top: 10px;
+}
+
+.images {
+    height: 650px;
+    width: 800px;
+    float: center;
+    position: relative;
+}
+
 #welcome {
     font-size: 35px;
 }
 
 #acc_role {
-    color: rgba(128,128,128, .75);
     font-size: 25px;
 }
 
@@ -177,8 +291,6 @@ th, td {
     border: 3px solid rgba(41, 41, 41, 0.15);
 }
 
-
-
-
-
-
+.links{
+    text-decoration: none;
+}

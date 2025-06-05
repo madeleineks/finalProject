@@ -8,11 +8,42 @@
 
 <body>
     <div th:replace="fragments :: header"></div>
+    <header>
+        <form method="get" th:action="@{/dashboard}">
+            <button id="dash_button" type="submit">Dashboard</button>
+        </form>
+    </header>
+    <h1 style="font-size: 55px"> Manage Your Properties </h1>
 
-    <h1> Manage Your Properties </h1>
+    <div id="manage_box">
+        <table class="manage_table">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Location</th>
+                <th>Size</th>
+                <th>Images</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="property, props : ${user.getProperty()}">
+                <td th:text="${property.title}"></td>
+                <td th:text="${property.price}"></td>
+                <td th:text="${property.location}"></td>
+                <td th:text="${property.location}"></td>
+                <td th:text="${property.size}"></td>
+
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
 
     <div th:replace="fragments :: footer"></div>
-
 </body>
 
 </html>

@@ -1,6 +1,7 @@
 package edu.abhs.hotProperties.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table (name = "users")
 public class User implements UserDetails {
 
     public enum Role {
@@ -23,15 +24,19 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "First name is required.")
     @Column(nullable = false)
     private String firstName;
 
+    @NotBlank(message = "Last name is required.")
     @Column(nullable = false)
     private String lastName;
 
+    @Email(message = "Must be a valid email.")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Password is required.")
     @Column(nullable = false)
     private String password;
 
@@ -54,7 +59,6 @@ public class User implements UserDetails {
         this.role = role;
         this.createdAt = Timestamp.valueOf(LocalDateTime.now());
     }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

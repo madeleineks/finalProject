@@ -11,6 +11,9 @@ public interface UserService {
     void prepareDashboardModel(Model model);
     List<Property> getProperties(User user);
     void addProperty(Property property);
+    List<User> getAllUsers();
+    void deleteUser(Long userId);
+    void addUser(User user);
     boolean emailExists(String email);
     void saveUser(User user);
 

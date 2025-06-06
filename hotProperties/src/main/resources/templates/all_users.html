@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
   <meta charset="UTF-8">
   <title>User Management</title>
@@ -32,7 +34,18 @@
         <td th:text="${user.email}">Email</td>
         <td th:text="${user.role}">Role</td>
         <td>
-          <a href="'#confirmDelete-User' + ${user.id}" class="button-red">Delete</a>
+          <button onclick="confirmDelete()" class="button-red">Delete</button>
+
+          <div th:id="confirmDelete" class="modal">
+            <div class="modal-content">
+              <h2>Are you sure you want to delete this user?</h2>
+              <form action="/admin/users/delete" method="post">
+                <input type="hidden" name="userId" th:value="${user.id}">
+                <button type="submit" class="button-red">Yes, delete</button>
+                <button th:href="@{/admin/users}" class="button-gray">Cancel</button>
+              </form>
+            </div>
+          </div>
         </td>
       </tr>
     </table>
@@ -45,18 +58,14 @@
     <br>&copy; 2025 Hot Properties <br>
   </div>
 
-  <div id="'confirmDelete-User' + ${user.id}" class="modal">
-    <div class="modalContent">
-      <h2>Are you sure you want to delete this user?</h2>
-      <form action="/users/admin/delete" method="post">
-        <input type="hidden" name="userId" th:value="${user.id}">
-        <button type="submit" class="button-red">Yes, delete</button>
-        <a href="#" class="button-gray">Cancel</a>
-      </form>
-    </div>
-  </div>
-
   <div th:replace="fragments :: footer"></div>
+
+  <script>
+    function confirmDelete() {
+      const modal = document.getElementById('confirmDelete');
+      modal.style.display = "block";
+    }
+  </script>
 
 </body>
 </html>

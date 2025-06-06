@@ -165,10 +165,12 @@ public class UserController {
     @Transactional
     @PreAuthorize("hasRole('AGENT')")
     @PostMapping("/deleteProperty")
-    public String deleteProperty(@RequestParam("id") long id) {
+    public String deleteProperty(@RequestParam("id") long id, Model model) {
         Property property=  propertyService.getPropertyById(id);
         userService.removeProperty(property);
-        return "redirect:/properties/manage";
+        model.addAttribute("successMessage", "Property removed successfully");
+        model.addAttribute("user", authService.getCurrentUser());
+        return "manage_properties";
     }
 
     @PreAuthorize("hasRole('AGENT')")

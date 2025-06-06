@@ -166,17 +166,6 @@ public class UserController {
         u.setFirstName(user.getFirstName());
         u.setLastName(user.getLastName());
 
-        if(!u.getEmail().equals(user.getEmail()))
-        {
-            u.setEmail(user.getEmail());
-
-            //Update user data
-            userService.saveUser(u);
-
-            // need to login if email was changed for authentication
-            return "login";
-        }
-
         //Update user data
         userService.saveUser(u);
         return "my_profile";

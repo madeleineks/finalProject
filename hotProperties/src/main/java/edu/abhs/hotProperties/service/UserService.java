@@ -10,7 +10,6 @@ import java.util.List;
 public interface UserService {
     void prepareDashboardModel(Model model);
     List<Property> getProperties(User user);
-    void addProperty(Property property);
     boolean emailExists(String email);
     void saveUser(User user);
 
@@ -46,5 +45,6 @@ public interface UserService {
     boolean isFavorited(User u, Property property);
     void updateProfile(User newUser);
     void removeProperty(Property property);
+    void addedProperty(Property property);
 
 }

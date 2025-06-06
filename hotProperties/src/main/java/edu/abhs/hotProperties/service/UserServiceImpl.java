@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     FavoriteRepository favoriteRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository, AuthService authService, FavoriteRepository favoriteRepository;) {
+    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository, AuthService authService, FavoriteRepository favoriteRepository) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.authService = authService;
@@ -37,6 +37,9 @@ public class UserServiceImpl implements UserService {
     public List<Property> getProperties(User user) {
         return propertyRepository.findPropertyByUser(user);
     }
+
+
+
     @Override
     public void prepareDashboardModel(Model model) {
         CurrentUserContext context = getCurrentUserContext();

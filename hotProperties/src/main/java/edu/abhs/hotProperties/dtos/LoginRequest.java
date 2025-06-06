@@ -2,22 +2,22 @@ package edu.abhs.hotProperties.dtos;
 
 public class LoginRequest {
 
-    private String username;
+    private String email;
     private String password;
 
     public LoginRequest() {}
 
-    public LoginRequest(String username, String password) {
-        this.username = username;
+    public LoginRequest(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 
     public String getUsername() {
-        return username;
+        return email;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.email = username;
     }
 
     public String getPassword() {

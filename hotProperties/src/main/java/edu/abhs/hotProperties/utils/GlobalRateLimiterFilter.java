@@ -14,7 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class GlobalRateLimiterFilter extends OncePerRequestFilter {
 
-    private static final int MAX_REQUESTS = 100; // per time window
+    //Increased this as I kept getting rate limit exceeded for loading multiple property pictures - Hamzeh
+    private static final int MAX_REQUESTS = 500; // per time window
     private static final long WINDOW_MS = 60_000; // 1 minute
 
     private final Map<String, RequestWindow> ipRequests = new ConcurrentHashMap<>();

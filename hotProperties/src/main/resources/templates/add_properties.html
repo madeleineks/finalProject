@@ -15,18 +15,11 @@
         </form>
     </header>
 
-    <h1 style="font-size: 40px">Add a New Property</h1>
+
 
     <div class="box2">
-
-        <div class="success" th:if="${success_message}">
-            <p th:text="${success_message}"></p>
-        </div>
-        <div class="failure" th:if="${fail_message}">
-            <p th:text="${fail_message}"></p>
-        </div>
-
-        <form type="reset" id="addProp" method="post" th:action="@{/properties/add}" th:object="${property}" enctype="multipart/form-data">
+        <h1 style="font-size: 40px">Add a New Property</h1>
+        <form id="addProp" method="post" th:action="@{/properties/add}" th:object="${property}" enctype="multipart/form-data">
 
             <div class="inp_field">
                 <label for="title">Title</label>
@@ -35,7 +28,7 @@
             </div>
 
             <div class="inp_field">
-                <label for="size">Size</label>
+                <label for="size">Size (sq ft)</label>
                 <br>
                 <input required placeholder="1400" class="inp_box" id="size" th:field="*{size}" type="text"/>
             </div>

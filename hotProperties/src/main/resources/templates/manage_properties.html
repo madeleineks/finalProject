@@ -13,11 +13,24 @@
             <button class="blue_button" id="dash_button" type="submit">Dashboard</button>
         </form>
     </header>
-    <h1 style="font-size: 55px; margin-top: -100px"> Manage Your Properties </h1>
 
     <div id="manage_box">
+        <h1 style="font-size: 55px; margin-top: -100px"> Manage Your Properties </h1>
+        <div>
+            <div class="success" th:if="${success_message}">
+                <p th:text="${success_message}"></p>
+            </div>
+            <div class="success" th:if="${successMessage}">
+                <p th:text="${successMessage}"></p>
+            </div>
+            <div class="failure" th:if="${fail_message}">
+                <p th:text="${fail_message}"></p>
+            </div>
+        </div>
+
         <table class="manage_table" >
             <thead>
+
             <tr class="top_row">
                 <th>Title</th>
                 <th >Price</th>
@@ -35,10 +48,21 @@
                 <td th:text="'$' + ${property.price}"></td>
                 <td th:text="${property.location}"></td>
                 <td th:text="${property.size} + ' sq ft'"></td>
-                <td id="pics">
-                    <a th:each="propertyImage : ${property.getPropertyImages()}" >
-                        <img th:src="@{'../images/' + ${propertyImage.imageFileName}}" alt="property images" width="200" style="border-radius: 20px; padding-left: 15px";  >
-                    </a>
+                <td id="pics" >
+                    <div th:each="propertyImage : ${property.getPropertyImages()}">
+                        <img th:src="@{'../images/' + ${propertyImage.imageFileName}}" alt="property images" width="200" style="border-radius: 20px; padding-left: 15px">
+                    </div>
+                </td>
+                <td style="padding: 20px; column-gap: 10px; text-align: center">
+                    <form method="get" th:action="@{/editProperty}">
+                        <input type="hidden" name="title" th:value="${property.title}" />
+                        <button id="edit_prop" class="blue_button" type="submit">Edit</button>
+                    </form>
+                    <br>
+                    <form method="post" th:action="@{/deleteProperty}">
+                        <input type="hidden" name="id" th:value="${property.id}" />
+                        <button id="del_prop" class="red_button" type="submit">Delete</button>
+                    </form>
                 </td>
             </tr>
             </tbody>

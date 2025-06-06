@@ -34,12 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
         log.info("JWT filter on URI: {}", request.getRequestURI());
-
         String path = request.getRequestURI();
 
         if (path.startsWith("/login") || path.startsWith("/css") || path.startsWith("/register") || path.startsWith("/images")) {
@@ -64,7 +62,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String username = jwtUtil.extractUsername(token);
-
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         if (token != null && jwtUtil.validateToken(token, userDetails)) {
@@ -75,7 +72,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authentication.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(request)
             );
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

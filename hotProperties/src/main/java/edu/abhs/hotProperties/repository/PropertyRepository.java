@@ -11,4 +11,6 @@ import java.util.List;
 public interface PropertyRepository extends JpaRepository<Property, Integer> {
     List<Property> findPropertyByUser(User user);
     Property findPropertyByTitle(String title);
+    Property findPropertyById(long id);
+    void deletePropertyById(long id);
 }

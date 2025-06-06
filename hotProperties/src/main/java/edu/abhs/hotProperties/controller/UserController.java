@@ -1,10 +1,9 @@
 package edu.abhs.hotProperties.controller;
 
 import edu.abhs.hotProperties.entities.Property;
+import edu.abhs.hotProperties.entities.PropertyImage;
 import edu.abhs.hotProperties.entities.User;
-import edu.abhs.hotProperties.service.PropertyService;
-import edu.abhs.hotProperties.service.UserService;
-import edu.abhs.hotProperties.service.AuthService;
+import edu.abhs.hotProperties.service.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -47,7 +46,7 @@ public class UserController {
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login" )
     public String processLogin(@ModelAttribute("user") User user, HttpServletResponse response, Model model) {
         try {
             Cookie jwtCookie = authService.loginAndCreateJwtCookie(user);
@@ -125,6 +124,53 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('AGENT')")
+    @GetMapping("/editProperty")
+    public String showEditProperty(@RequestParam("title") String title, Model model) {
+        Property property = propertyService.getByTitle(title);
+        model.addAttribute("property", property);
+        model.addAttribute("newProperty", new Property());
+        return "edit_property";
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/editProperty")
+    public String editProperty(@ModelAttribute("newProperty") Property newProperty,@RequestParam("id") long id,
+                               @RequestParam(value = "file", required = false)
+    List<MultipartFile> files, Model model)  {
+        User user = authService.getCurrentUser();
+        Property property = propertyService.getPropertyById(id);
+        propertyService.updateProperty(newProperty, property);
+        propertyService.addPropertyImages(property, files);
+        model.addAttribute("successMessage", "Property updated successfully!");
+        model.addAttribute("user", user);
+        return "manage_properties";
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/deletePropertyImage")
+    public String deletePropertyImage(@RequestParam("propsid") long id, @RequestParam("imageId") long imageId, Model model) {
+
+        Property property = propertyService.getPropertyById(id);
+
+        propertyService.deletePropertyImage(property, imageId);
+        model.addAttribute("property", property);
+        model.addAttribute("newProperty", new Property());
+        model.addAttribute("successMessage", "Property image deleted successfully");
+        return "edit_property";
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/deleteProperty")
+    public String deleteProperty(@RequestParam("id") long id) {
+        Property property=  propertyService.getPropertyById(id);
+        userService.removeProperty(property);
+        return "redirect:/properties/manage";
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
     @GetMapping("/properties/add")
     public String showAddProperties(Model model) {
         model.addAttribute("property", new Property());
@@ -135,29 +181,51 @@ public class UserController {
     @PreAuthorize("hasRole('AGENT')")
     @PostMapping("/properties/add")
     public String addProperty(@ModelAttribute("property") Property property, @RequestParam(value = "file", required = false)
-    List<MultipartFile> files, Model model) throws IOException {
+    List<MultipartFile> files, Model model) {
+        User user = authService.getCurrentUser();
+        model.addAttribute("user", user);
 
-        if (files.isEmpty() || property == null) {
+        if (property == null) {
             model.addAttribute("fail_message", "Could not add Property. Please try again.");
             return "add_properties";
         }
 
-        for(MultipartFile file: files) {
-            if (file.isEmpty()) {
-                userService.addedProperty(property);
-                propertyService.addProperty(property);
-
-            } else {
-                Path destination = Paths.get("src/main/resources/static/images", file.getOriginalFilename());
-                file.transferTo(destination);
-
-                userService.addedProperty(property);
-                propertyService.addProperty(property);
-                propertyService.addPropertyWithImage(property, file.getOriginalFilename());
-            }
-        }
+        userService.addedProperty(property);
+        propertyService.addProperty(property);
+        propertyService.addPropertyImages(property, files);
         model.addAttribute("success_message", "Added new property successfully!");
-        return "add_properties";
+        return "manage_properties";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myProfile")
+    public String showMyProfile(Model model) {
+        model.addAttribute("user", authService.getCurrentUser());
+        return "my_profile";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/editProfile")
+    public String editProfile(Model model) {
+        model.addAttribute("newUser", new User());
+        model.addAttribute("oldUser", authService.getCurrentUser());
+        return "edit_profile";
+    }
+
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/editProfile")
+    public String editedProfile(@ModelAttribute("newUser") User newUser, Model model) {
+
+        try {
+            userService.updateProfile(newUser);
+            model.addAttribute("user", authService.getCurrentUser());
+            model.addAttribute("update", "Name Changed successfully!");
+            return "dashboard";
+        } catch (Exception e) {
+            model.addAttribute("failed", "Could not update profile name!. Please try again.");
+            return "redirect:/editProfile";
+        }
     }
 
 

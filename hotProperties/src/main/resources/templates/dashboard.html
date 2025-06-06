@@ -14,13 +14,20 @@
   <div class = box1 >
 
     <h1 id="welcome" th:utext= " 'Welcome back to your dashboard,<br>' + ${user.firstName} + ' ' +  ${user.lastName} + '!' " > </h1>
-    <h1 id="acc_role" style="font-size: 20px"> Account Role: <span id="roleString" th:text="${user.role} ">  </span>
-    </h1>
+    <div style="width: 80%; margin: 0 auto" th:if="${update}" class="success">
+      <p th:text="${update}"></p>
+    </div>
     <hr id="divider_line">
+    <h1  id="acc_role" style="font-size: 20px"> Account Role:
+      <span id="roleString" th:text="${user.role}"></span>
+    </h1>
+
+
+
     <ul class="no-bullets">
 
       <li >
-        <a id="my_profile" th:href="@{/properties/add}" class="tabs" style="color: #0056b3">My profile</a>
+        <a id="my_profile" th:href="@{/myProfile}" class="tabs" style="color: #0056b3">My profile</a>
       </li>
 
       <li  th:if="${#authorization.expression('hasRole(''AGENT'')')}">
@@ -38,10 +45,9 @@
     </ul>
     <br>
     <br>
-    <br>
 
     <form method="get" th:action="@{/login}">
-      <button id="logout_button" type="submit">Log out</button>
+      <button class="red_button" type="submit">Log out</button>
     </form>
 
     <br>

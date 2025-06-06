@@ -12,23 +12,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final AuthService authService;
     UserRepository userRepository;
     PropertyRepository propertyRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository) {
+    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository, AuthService authService) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
-    }
-
-    @Override
-    public List<Property> getProperties(User user) {
-        return propertyRepository.findPropertyByUser(user);
+        this.authService = authService;
     }
 
     @Override
@@ -45,6 +43,8 @@ public class UserServiceImpl implements UserService {
         property.setUser(user);
     }
 
+
+
     @Override
     public boolean emailExists(String email) {
         return userRepository.findByEmail(email).isPresent();
@@ -52,6 +52,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateProfile(User newUser) {
+
+        User oldUser = authService.getCurrentUser();
+        oldUser.setFirstName(newUser.getFirstName());
+        oldUser.setLastName(newUser.getLastName());
+
+        userRepository.save(oldUser);
+    }
+
+    @Override
+    public void removeProperty(Property property) {
+        User user = authService.getCurrentUser();
+        user.removeProperty(property);
         userRepository.save(user);
     }
 

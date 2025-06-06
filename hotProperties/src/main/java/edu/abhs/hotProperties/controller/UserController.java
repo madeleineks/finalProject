@@ -338,7 +338,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/users/create-agent")
-    public String createAgent(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttributes, BindingResult result) {
+    public String createAgent(@Valid @ModelAttribute("user") User user, BindingResult result, RedirectAttributes redirectAttributes) {
         try {
             if (result.hasErrors()) {
                 return "add_agent";

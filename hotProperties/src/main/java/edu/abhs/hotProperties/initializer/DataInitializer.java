@@ -168,6 +168,7 @@ public class DataInitializer {
                 File file = new File("src/main/resources/static/images/PropertyImages");
                 File[] imageNames = file.listFiles();
 
+                assert imageNames != null;
                 for (File image : imageNames) {
                     for (Property property : properties) {
                         if (property.getTitle().equals(file.getName())) {

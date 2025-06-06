@@ -15,7 +15,7 @@
         <button id="dash_button" type="submit">To Dashboard</button>
     </form>
 
-    <div class="box1">
+    <div class="container">
         <h1>Create a New Agent</h1>
         <div th:if="${successMessage}" class="success">
             <p th:text="${successMessage}"></p>
@@ -36,7 +36,9 @@
             <label><input type="password" th:field="*{password}" placeholder="Password"> </label>
             <div th:if="${#fields.hasErrors('password')}" class="failure" th:errors="*{password}"></div>
 
-            <button type="submit" class="button-blue">Create Agent</button>
+            <div>
+                <button type="submit" class="button-blue" style="width: 50%">Create Agent</button>
+            </div>
         </form>
     </div>
 

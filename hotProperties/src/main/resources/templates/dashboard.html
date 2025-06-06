@@ -6,7 +6,7 @@
   <link rel="stylesheet" th:href="@{/css/dashboard_style.css}"/>
 </head>
 
-<body >
+<body>
 
   <div th:replace="fragments :: header"></div>
 
@@ -17,6 +17,7 @@
 
       <ul class="no-bullets">
         <li><h1 style="font-size: 30px;" th:if="${#authorization.expression('hasRole(''BUYER'')')}"> Buyer DashBoard </h1></li>
+        <li><h1 style="font-size: 30px;" th:if="${#authorization.expression('hasRole(''ADMIN'')')}"> Admin Dashboard </h1></li>
 
         <!--      - TO DO myProfile controller method -->
         <li class=links >
@@ -37,6 +38,12 @@
         </li>
         <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
           <a th:href="@{/favorites}" style="color: #0056b3; text-decoration: none" th:text= "'Favorites (' + ${favCount} + ')'">Favorites</a>
+        </li>
+        <li class="links" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+          <a th:href="@{/admin/users}">Manage Users</a>
+        </li>
+        <li class="links" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+          <a th:href="@{/admin/users/create-agent}">Create Agent</a>
         </li>
 
       </ul><br><br><br><br><br><br><br><br><br><br>

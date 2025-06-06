@@ -1,17 +1,15 @@
 package edu.abhs.hotProperties.controller;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
-import edu.abhs.hotProperties.dtos.JwtResponse;
-import edu.abhs.hotProperties.entities.Favorite;
-import edu.abhs.hotProperties.entities.Property;
-import edu.abhs.hotProperties.entities.PropertyImage;
-import edu.abhs.hotProperties.entities.User;
+import edu.abhs.hotProperties.entities.*;
 import edu.abhs.hotProperties.service.UserService;
 import edu.abhs.hotProperties.service.AuthService;
+import edu.abhs.hotProperties.dtos.JwtResponse;
 import io.jsonwebtoken.io.Encoders;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,11 +20,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String processLogin(@ModelAttribute("user") User user, HttpServletResponse response, Model model) {
+    public String processLogin(@ModelAttribute("user") User user, HttpServletResponse response, org.springframework.ui.Model model) {
         try {
             Cookie jwtCookie = authService.loginAndCreateJwtCookie(user);
             response.addCookie(jwtCookie);
@@ -113,8 +113,7 @@ public class UserController {
 
     @GetMapping("/dashboard")
     @PreAuthorize("isAuthenticated()")
-    public String showDashboard(Model model)
-    {
+    public String showDashboard(Model model) {
         userService.prepareDashboardModel(model);
         return "dashboard";
     }
@@ -339,4 +338,46 @@ public class UserController {
 
         return "redirect:/properties/view/" + id;
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/users/create-agent")
+    public String showCreateAgent(Model model) {
+        model.addAttribute("user", new User());
+        return "add_agent";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/users/create-agent")
+    public String createAgent(@Valid @ModelAttribute("user") User user, RedirectAttributes redirectAttributes, BindingResult result) {
+        try {
+            if (result.hasErrors()) {
+                return "add_agent";
+            } else {
+                userService.addUser(user);
+                redirectAttributes.addFlashAttribute("successMessage", "Agent created successfully");
+                return "redirect:/dashboard";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("failureMessage", "Agent creation failed: " + e.getMessage());
+            return "redirect:/admin/users/create-agent";
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/users")
+    public String showAllUsers(Model model) {
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "all_users";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/users/delete")
+    public String handleDeleteUser(@RequestParam("userId") Long userId, Model model,
+                                   RedirectAttributes redirectAttributes) {
+        userService.deleteUser(userId);
+        redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully");
+        return "redirect:/admin/users";
+    }
+
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>User Management</title>
+  <link rel="stylesheet" th:href="@{/css/dashboard_style.css}"/>
+  <link rel="stylesheet" th:href="@{/css/admin_style.css}"/>
+</head>
+<body>
+  <div th:replace="fragments :: header"></div>
+
+  <form method="get" th:action="@{/dashboard}">
+    <button id="dash_button" type="submit">To Dashboard</button>
+  </form>
+
+  <div class="box1">
+    <h1>User Management</h1>
+
+    <div th:if="${successMessage}" class="success">
+      <p th:text="${successMessage}"></p>
+    </div>
+
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+      <tr th:each="user : ${users}">
+        <td th:text="${user.firstName} + ' ' + ${user.lastName}">Name</td>
+        <td th:text="${user.email}">Email</td>
+        <td th:text="${user.role}">Role</td>
+        <td>
+          <a href="'#confirmDelete-User' + ${user.id}" class="button-red">Delete</a>
+        </td>
+      </tr>
+    </table>
+
+    <a th:href="@{/dashboard}">← Back to Dashboard</a>
+  </div>
+
+  <div class="footer">
+    Authors: Hamzeh | Zach | Madeleine | Joe
+    <br>&copy; 2025 Hot Properties <br>
+  </div>
+
+  <div id="'confirmDelete-User' + ${user.id}" class="modal">
+    <div class="modalContent">
+      <h2>Are you sure you want to delete this user?</h2>
+      <form action="/users/admin/delete" method="post">
+        <input type="hidden" name="userId" th:value="${user.id}">
+        <button type="submit" class="button-red">Yes, delete</button>
+        <a href="#" class="button-gray">Cancel</a>
+      </form>
+    </div>
+  </div>
+
+  <div th:replace="fragments :: footer"></div>
+
+</body>
+</html>

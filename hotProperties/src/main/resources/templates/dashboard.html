@@ -39,7 +39,7 @@
       </li>
 
       <li th:if="${#authorization.expression('hasAnyRole(''AGENT'', ''BUYER'')')}">
-        <a id="message" th:href="@{/properties/add}" style="color: #0056b3">Messages</a>
+        <a id="message" th:href="@{/messages}" style="color: #0056b3">Messages</a>
       </li>
 
     </ul>

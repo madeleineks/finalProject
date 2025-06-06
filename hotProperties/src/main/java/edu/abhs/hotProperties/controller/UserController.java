@@ -1,5 +1,6 @@
 package edu.abhs.hotProperties.controller;
 
+import edu.abhs.hotProperties.entities.Messages;
 import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.entities.PropertyImage;
 import edu.abhs.hotProperties.entities.User;
@@ -226,6 +227,13 @@ public class UserController {
             model.addAttribute("failed", "Could not update profile name!. Please try again.");
             return "redirect:/editProfile";
         }
+    }
+
+    @PreAuthorize("hasAnyRole('AGENT', 'BUYER')")
+    @GetMapping("/messages")
+    public String showMessages(Model model) {
+        model.addAttribute("user", new User());
+        return "messages";
     }
 
 

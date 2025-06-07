@@ -133,5 +133,9 @@ public class Property {
         this.messageList.add(messages);
     }
 
+    public void removeMessage(Messages messages) {
+        this.messageList.remove(messages);
+    }
+
 
 }

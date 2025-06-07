@@ -17,7 +17,7 @@
     <div style="width: 80%; margin: 0 auto" th:if="${update}" class="success">
       <p th:text="${update}"></p>
     </div>
-    <hr id="divider_line">
+    <hr class="divider_line">
     <h1  id="acc_role" style="font-size: 20px"> Account Role:
       <span id="roleString" th:text="${user.role}"></span>
     </h1>
@@ -38,14 +38,19 @@
         <a id="add_props" class="tabs"  th:href="@{/properties/add}" style="color: #0056b3">Add Properties</a>
       </li>
 
-      <li th:if="${#authorization.expression('hasAnyRole(''AGENT'', ''BUYER'')')}">
-        <a id="message" th:href="@{/messages}" style="color: #0056b3">Messages</a>
+      <li th:if="${#authorization.expression('hasRole(''AGENT'')')}">
+        <a class="tabs"  id="message" th:href="@{/messages}" style="color: #0056b3" th:text= "'Messages (' + ${messageCountAgent} + ')'">Messages</a>
+      </li>
+
+      <li class="links" th:if="${#authorization.expression('hasRole(''BUYER'')')}">
+        <a id="messageBuyer" class="tabs" th:href="@{/messagesBuyer}" style="color: #0056b3;" th:text= "'My Messages (' + ${messageCountBuyer} + ')'">My Messages</a>
+      </li>
+
+      <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
+        <a class="tabs" id="browseProp"  th:href="@{/properties/list}" style="color: #0056b3;">Browse Properties</a>
       </li>
       <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
-        <a th:href="@{/properties/list}" style="color: #0056b3; text-decoration: none">Browse Properties</a>
-      </li>
-      <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
-          <a th:href="@{/favorites}" style="color: #0056b3; text-decoration: none" th:text= "'Favorites (' + ${favCount} + ')'">Favorites</a>
+          <a class="tabs" id="favs"  th:href="@{/favorites}" style="color: #0056b3;" th:text= "'Favorites (' + ${favCount} + ')'">Favorites</a>
       </li>
 
     </ul>

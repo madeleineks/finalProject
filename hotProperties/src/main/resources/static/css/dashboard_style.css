@@ -104,7 +104,7 @@ body {
     background-color: rgb(161, 15, 15);
 }
 
-#divider_line {
+.divider_line {
     width: 80%;
     height: .01em;
     border: solid .01em;
@@ -121,14 +121,14 @@ body {
     margin-top: 25px;
 }
 
-#my_profile, #manage_props, #add_props, #message {
+#my_profile, #manage_props, #add_props, #message, #messageBuyer, #favs, #browseProp {
     text-decoration: none;
 
 }
 
 #my_profile:hover, #my_profile:hover,
 #manage_props:hover, #add_props:hover,
-#message:hover {
+#message:hover, #messageBuyer:hover, #favs:hover, #browseProp:hover {
     text-decoration: underline;
 }
 
@@ -339,6 +339,22 @@ th {
     flex-wrap: wrap;
     padding-left: 20px;
 
+}
+
+#msg_buttons {
+    padding-left: 5px;
+    text-align: center;
+}
+
+#message_deits {
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+
+}
+
+.space {
+    padding-bottom: 15px;
+    gap: 20px;
 }
 
 

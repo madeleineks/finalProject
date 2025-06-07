@@ -1,6 +1,7 @@
 package edu.abhs.hotProperties.service;
 
 import edu.abhs.hotProperties.entities.Favorite;
+import edu.abhs.hotProperties.entities.Messages;
 import edu.abhs.hotProperties.entities.User;
 import edu.abhs.hotProperties.entities.Property;
 import org.springframework.ui.Model;
@@ -31,4 +32,6 @@ public interface UserService {
     void removeProperty(Property property);
     void addedProperty(Property property);
     User getUserById(long id);
+    List<Messages> getAgentMessages();
+    List<Messages> getBuyerMessages();
 }

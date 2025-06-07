@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface MessagesRepository extends JpaRepository<Messages,String> {
-
+    Messages findById(long id);
+    void deleteById(long id);
 }

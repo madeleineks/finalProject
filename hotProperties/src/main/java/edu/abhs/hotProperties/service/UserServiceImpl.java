@@ -1,6 +1,7 @@
 package edu.abhs.hotProperties.service;
 
 import edu.abhs.hotProperties.entities.Favorite;
+import edu.abhs.hotProperties.entities.Messages;
 import edu.abhs.hotProperties.entities.User;
 import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.repository.FavoriteRepository;
@@ -21,16 +22,18 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final AuthService authService;
+    private final MessagesService messagesService;
     UserRepository userRepository;
     PropertyRepository propertyRepository;
     FavoriteRepository favoriteRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository, AuthService authService, FavoriteRepository favoriteRepository) {
+    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository, AuthService authService, FavoriteRepository favoriteRepository, MessagesService messagesService) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.authService = authService;
         this.favoriteRepository = favoriteRepository;
+        this.messagesService = messagesService;
     }
 
     @Override
@@ -43,10 +46,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public void prepareDashboardModel(Model model) {
         CurrentUserContext context = getCurrentUserContext();
+        User user = authService.getCurrentUser();
 
         if(context.user().getRole() == User.Role.BUYER)
         {
+            model.addAttribute("messageCountBuyer", user.getMessageList().size());
             model.addAttribute("favCount", favoriteRepository.countByBuyer(context.user()));
+        }
+        if (context.user().getRole() == User.Role.AGENT) {
+            int messageCount = 0;
+            for (Property property : user.getPropertyList()) {
+                for (Messages message : property.getMessageList()) {
+                    messageCount++;
+                }
+            }
+            model.addAttribute("messageCountAgent", messageCount);
         }
 
         model.addAttribute("user", context.user());
@@ -63,6 +77,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(long id) {
         return userRepository.findUserById(id);
+    }
+
+    @Override
+    public List<Messages> getAgentMessages() {
+        User user = authService.getCurrentUser();
+        List<Property> properties = user.getPropertyList();
+
+        List<Messages> messages = new ArrayList<>();
+        for (Property property : properties) {
+            for (Messages message : property.getMessageList()) {
+                messages.add(message);
+            }
+        }
+        return messages;
+    }
+
+    @Override
+    public List<Messages> getBuyerMessages() {
+        User user = authService.getCurrentUser();
+
+        List<Messages> messages = new ArrayList<>();
+        for (Messages message : user.getMessageList()) {
+            messages.add(message);
+        }
+        return messages;
     }
 
 

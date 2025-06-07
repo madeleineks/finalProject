@@ -235,22 +235,76 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('AGENT', 'BUYER')")
+    @PreAuthorize("hasRole('AGENT')")
     @GetMapping("/messages")
     public String showMessages(Model model) {
+
+        List<Messages> messages = userService.getAgentMessages();
         User user = authService.getCurrentUser();
+
         model.addAttribute("user", user);
-        List<Property> properties = user.getPropertyList();
-
-        List<Messages> messages = new ArrayList<>();
-        for (Property property : properties) {
-            for (Messages message : property.getMessageList()) {
-                messages.add(message);
-            }
-        }
-
         model.addAttribute("messages", messages);
         return "messages";
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/replyToBuyer")
+    public String replyToBuyer(@RequestParam("reply") String reply, @RequestParam("messageId") long messageId, Model model) {
+        Messages message = messagesService.getMessagesById(messageId);
+        messagesService.reply(reply, message);
+        model.addAttribute("successMessage", "Message replied sent!");
+
+
+        List<Messages> messages = userService.getAgentMessages();
+        model.addAttribute("user", authService.getCurrentUser());
+        model.addAttribute("messages", messages);
+        model.addAttribute("message_sent", "Reply sent to Buyer");
+
+        return "messages";
+    }
+
+    @PreAuthorize("hasRole('BUYER')")
+    @GetMapping("/messagesBuyer")
+    public String showMessagesBuyer(Model model) {
+
+        List<Messages> messages = userService.getBuyerMessages();
+        model.addAttribute("messages", messages);
+        return "messagesBuyer";
+    }
+
+
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/deleteMessage")
+    @Transactional
+    public String deleteMessage(@RequestParam("id") long id) {
+        Messages message = messagesService.getMessagesById(id);
+        Property property = message.getProperty();
+        User user = message.getSender();
+        messagesService.deleteMessages(user, property, message);
+
+        return "redirect:/messages";
+
+    }
+
+    @PreAuthorize("hasRole('BUYER')")
+    @PostMapping("/deleteMessageBuyer")
+    @Transactional
+    public String deleteMessageBuyer(@RequestParam("id") long id) {
+        Messages message = messagesService.getMessagesById(id);
+        Property property = message.getProperty();
+        User user = message.getSender();
+        messagesService.deleteMessages(user, property, message);
+
+        return "redirect:/messagesBuyer";
+
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
+    @GetMapping("/viewMessage")
+    public String viewMessage(@RequestParam("id") long id, Model model) {
+        Messages message = messagesService.getMessagesById(id);
+        model.addAttribute("message", message);
+        return "agentViewMessage";
     }
 
     @PreAuthorize("hasRole('BUYER')")
@@ -280,7 +334,7 @@ public class UserController {
         }
         return "property_view";
     }
-    
+
 
     @GetMapping("/properties/list")
     @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")

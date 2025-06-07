@@ -184,4 +184,8 @@ public class User implements UserDetails {
     public void addMessage(Messages messages) {
         this.messageList.add(messages);
     }
+
+    public void removeMessage(Messages messages) {
+        this.messageList.remove(messages);
+    }
 }

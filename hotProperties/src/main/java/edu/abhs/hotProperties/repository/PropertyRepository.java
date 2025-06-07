@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PropertyRepository extends JpaRepository<Property, Integer> {
+public interface PropertyRepository extends JpaRepository<Property, Long> {
 
     List<Property> findPropertyByUser(User user);
 
@@ -23,12 +23,12 @@ public interface PropertyRepository extends JpaRepository<Property, Integer> {
     @Query(value = "select * from property p where p.location like %:zipcode% and p.size >= :minSqFt and p.price between :minPrice and :maxPrice order by price asc",
             nativeQuery = true)
     List<Property> findPropertyByWithAllFiltersAsc(@Param("zipcode") String zipcode, @Param("minSqFt") String minSqFt,
-                                                @Param("minPrice") String minPrice, @Param("maxPrice") String maxPrice);
+                                                   @Param("minPrice") String minPrice, @Param("maxPrice") String maxPrice);
 
     @Query(value = "select * from property p where p.location like %:zipcode% and p.size >= :minSqFt and p.price between :minPrice and :maxPrice order by price desc",
             nativeQuery = true)
     List<Property> findPropertyByWithAllFiltersDesc(@Param("zipcode") String zipcode, @Param("minSqFt") String minSqFt,
-                                                   @Param("minPrice") String minPrice, @Param("maxPrice") String maxPrice);
+                                                    @Param("minPrice") String minPrice, @Param("maxPrice") String maxPrice);
 
 
     @Query(value = "select * from property p where p.location like %:zipcode% and p.size >= :minSqFt order by price asc",

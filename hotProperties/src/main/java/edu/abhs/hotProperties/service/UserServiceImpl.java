@@ -1,5 +1,7 @@
 package edu.abhs.hotProperties.service;
 
+import edu.abhs.hotProperties.dtos.AlreadyExistsException;
+import edu.abhs.hotProperties.dtos.BadParamaterException;
 import edu.abhs.hotProperties.entities.Favorite;
 import edu.abhs.hotProperties.entities.Messages;
 import edu.abhs.hotProperties.entities.User;
@@ -70,6 +72,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addedProperty(Property property) {
         User user = getCurrentUserContext().user();
+
+        if (property.getTitle() == null || property.getSize() == null || property.getLocation() == null || property.getTitle().isBlank() ||
+                property.getLocation().isBlank() || property.getPrice() <=0 || property.getSize() <= 0
+        ) {
+            throw new BadParamaterException("Please enter all required fields properly.");
+        }
+        for (Property props: user.getProperty()) {
+            if (props.getTitle().equals(property.getTitle())) {
+                throw new AlreadyExistsException("Property with this title already exists.");
+            }
+            if (props.getLocation().equals(property.getLocation())) {
+                throw new AlreadyExistsException("Property with this location already exists.");
+            }
+        }
         user.addProperty(property);
         property.setUser(user);
     }

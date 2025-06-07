@@ -138,13 +138,18 @@ public class UserController {
             return "add_properties";
         }
 
-        userService.addedProperty(property);
-        propertyService.addProperty(property);
-        propertyService.addPropertyImages(property, files);
+        try {
+            userService.addedProperty(property);
+            propertyService.addProperty(property);
+            propertyService.addPropertyImages(property, files);
 
-        User user = authService.getCurrentUser();
-        model.addAttribute("user", user);
-        model.addAttribute("success_message", "Added new property successfully!");
+            User user = authService.getCurrentUser();
+            model.addAttribute("user", user);
+            model.addAttribute("success_message", "Added new property successfully!");
+        } catch (Exception e) {
+            model.addAttribute("fail_message", e.getMessage());
+            return "add_properties";
+        }
         return "manage_properties";
     }
 

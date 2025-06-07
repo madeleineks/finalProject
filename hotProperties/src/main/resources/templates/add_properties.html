@@ -19,36 +19,39 @@
 
     <div class="box2">
         <h1 style="font-size: 40px">Add a New Property</h1>
+        <div class="failure" th:if="${fail_message}">
+            <p th:text="${fail_message}"></p>
+        </div>
         <form id="addProp" method="post" th:action="@{/properties/add}" th:object="${property}" enctype="multipart/form-data">
 
             <div class="inp_field">
                 <label for="title">Title</label>
                 <br>
-                <input required placeholder="New House" class="inp_box" id="title" th:field="*{title}" type="text"/>
+                <input placeholder="New House" class="inp_box" id="title" th:field="*{title}" type="text"/>
             </div>
 
             <div class="inp_field">
                 <label for="size">Size (sq ft)</label>
                 <br>
-                <input required placeholder="1400" class="inp_box" id="size" th:field="*{size}" type="text"/>
+                <input placeholder="1400" class="inp_box" id="size" th:field="*{size}" type="text"/>
             </div>
 
             <div class="inp_field">
                 <label for="price">Price</label>
                 <br>
-                <input required placeholder="150000" class="inp_box" id="price" th:field="*{price}" type="text"/>
+                <input placeholder="150000" class="inp_box" id="price" th:field="*{price}" type="text"/>
             </div>
 
             <div class="inp_field">
                 <label for="location">Location</label>
                 <br>
-                <input required placeholder="New House 1234 St" class="inp_box" id="location" th:field="*{location}" type="text"/>
+                <input placeholder="New House 1234 St" class="inp_box" id="location" th:field="*{location}" type="text"/>
             </div>
 
             <div class="inp_field">
                 <label for="description">Description</label>
                 <br>
-                <textarea required placeholder="Description" id="description" th:field="*{description}" style="font-size: 18px; width: 95%; height: 200px; resize: none">
+                <textarea placeholder="Description" id="description" th:field="*{description}" style="font-size: 18px; width: 95%; height: 200px; resize: none">
                 </textarea>
             </div>
 

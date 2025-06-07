@@ -24,7 +24,7 @@
                 <th>Property</th>
                 <th >Buyer </th>
                 <th>Sent At</th>
-                <th>Agent Reply</th>
+                <th>Messages</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -32,7 +32,7 @@
             <tbody>
             <tr th:each="message, messages : ${messages}">
                 <td th:text="${message.property.title}"></td>
-                <td th:text="${message.sender.getFirstName()}"></td>
+                <td th:text="${message.sender.getFirstName()} + ' ' + ${message.sender.getLastName()}"></td>
                 <td th:text="${message.timestamp}"></td>
                 <td th:text="${message.message}"></td>
                 <td>

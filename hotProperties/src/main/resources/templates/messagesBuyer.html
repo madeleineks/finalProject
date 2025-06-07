@@ -20,7 +20,7 @@
 
       <tr class="top_row">
         <th>Property</th>
-        <th >Your Message</th>
+        <th>Your Message</th>
         <th>Sent At</th>
         <th>Agent Reply</th>
         <th>Actions</th>
@@ -30,9 +30,9 @@
       <tbody>
       <tr th:each="message, messages : ${messages}">
         <td th:text="${message.property.title}"></td>
-        <td th:text="${message.reply}"></td>
-        <td th:text="${message.timestamp}"></td>
         <td th:text="${message.message}"></td>
+        <td th:text="${message.timestamp}"></td>
+        <td th:text="${message.reply}"></td>
         <td>
           <div id="msg_buttons">
             <form method="post" th:action="@{/deleteMessageBuyer}">

@@ -19,6 +19,13 @@
 
   <div class="box3">
     <h1 style="font-size: 35px; padding-bottom: 30px">Edit Your Profile</h1>
+
+    <div class="failure" th:if="${failed}">
+      <p th:text="${failed}"></p>
+    </div>
+    <div class="success" th:if="${update}">
+      <p th:text="${update}"></p>
+    </div>
     <form id="edit_profile" method="post" th:action="@{/editProfile}" th:object="${newUser}" enctype="multipart/form-data">
 
       <div class="inp_field">

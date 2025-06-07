@@ -231,13 +231,17 @@ public class UserController {
 
         try {
             userService.updateProfile(newUser);
-            model.addAttribute("user", authService.getCurrentUser());
+            model.addAttribute("oldUser", authService.getCurrentUser());
+            model.addAttribute("newUser", new User());
             model.addAttribute("update", "Name Changed successfully!");
-            return "dashboard";
+
+
         } catch (Exception e) {
-            model.addAttribute("failed", "Could not update profile name!. Please try again.");
-            return "redirect:/editProfile";
+            model.addAttribute("oldUser", authService.getCurrentUser());
+            model.addAttribute("newUser", new User());
+            model.addAttribute("failed", e.getMessage());
         }
+        return "edit_profile";
     }
 
     @PreAuthorize("hasRole('AGENT')")

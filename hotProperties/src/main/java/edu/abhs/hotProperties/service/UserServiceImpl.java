@@ -135,6 +135,11 @@ public class UserServiceImpl implements UserService {
     public void updateProfile(User newUser) {
 
         User oldUser = authService.getCurrentUser();
+
+        if (newUser.getFirstName() == null || newUser.getFirstName().isBlank() ||  newUser.getLastName() == null || newUser.getLastName().isBlank()) {
+            throw new BadParamaterException("Please enter all required fields properly.");
+        }
+
         oldUser.setFirstName(newUser.getFirstName());
         oldUser.setLastName(newUser.getLastName());
 
@@ -144,6 +149,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeProperty(Property property) {
         User user = authService.getCurrentUser();
+
+        Favorite favorite = favoriteRepository.findByProperty(property);
+        if (favorite != null) {
+            favoriteRepository.delete(favorite);
+        }
         user.removeProperty(property);
         userRepository.save(user);
     }

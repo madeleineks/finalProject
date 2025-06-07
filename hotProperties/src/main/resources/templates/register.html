@@ -60,21 +60,12 @@
             <input id="password" th:field="*{password}" type="password" required/>
             <button type="button" class="toggle-password" onclick="togglePassword('password')">Show</button>
         </div>
-        <div class="password-requirements">
-            Password must be at least 8 characters long and include uppercase, lowercase, number, and special character
-        </div>
         
         <label for="confirmPassword">Confirm Password</label>
         <div class="password-container">
             <input id="confirmPassword" name="confirmPassword" type="password" required/>
             <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">Show</button>
         </div>
-        
-        <label for="role">I want to:</label>
-        <select id="role" th:field="*{role}" class="role-select" required>
-            <option value="BUYER">Buy a Home</option>
-            <option value="AGENT">List Properties</option>
-        </select>
 
         <button type="submit">Register</button>
     </form>

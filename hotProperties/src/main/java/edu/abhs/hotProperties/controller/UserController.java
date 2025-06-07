@@ -66,12 +66,6 @@ public class UserController {
                 return "register";
             }
 
-            // Validate password strength
-            if (!isPasswordStrong(user.getPassword())) {
-                model.addAttribute("errorMessage", "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character");
-                return "register";
-            }
-
             // Check if email already exists
             if (userService.emailExists(user.getEmail())) {
                 model.addAttribute("errorMessage", "Email already registered");
@@ -83,6 +77,7 @@ public class UserController {
 
             // Encode password and save user
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRole(User.Role.BUYER);
             userService.saveUser(user);
 
             model.addAttribute("successMessage", "Registration successful! Please login.");
@@ -91,14 +86,6 @@ public class UserController {
             model.addAttribute("errorMessage", "Registration failed: " + e.getMessage());
             return "register";
         }
-    }
-
-    private boolean isPasswordStrong(String password) {
-        return password != null && password.length() >= 8 &&
-                password.matches(".*[A-Z].*") && // uppercase
-                password.matches(".*[a-z].*") && // lowercase
-                password.matches(".*\\d.*") &&   // digit
-                password.matches(".*[!@#$%^&*(),.?\":{}|<>].*"); // special char
     }
 
     @GetMapping("/dashboard")

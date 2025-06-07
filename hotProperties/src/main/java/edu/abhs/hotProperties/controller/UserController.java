@@ -1,27 +1,19 @@
 package edu.abhs.hotProperties.controller;
 
 import edu.abhs.hotProperties.entities.Messages;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
-import edu.abhs.hotProperties.dtos.JwtResponse;
 import edu.abhs.hotProperties.entities.Favorite;
 import edu.abhs.hotProperties.entities.Property;
-import edu.abhs.hotProperties.entities.PropertyImage;
 import edu.abhs.hotProperties.entities.User;
 import edu.abhs.hotProperties.service.*;
 import edu.abhs.hotProperties.service.UserService;
 import edu.abhs.hotProperties.service.AuthService;
-import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Message;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import jakarta.servlet.http.HttpServletResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,17 +22,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -49,13 +33,16 @@ public class UserController {
     AuthService authService;
     PasswordEncoder passwordEncoder;
     PropertyService propertyService;
+    MessagesService messagesService;
 
     @Autowired
-    public UserController(UserService userService, AuthService authService, PasswordEncoder passwordEncoder, PropertyService propertyService) {
+    public UserController(UserService userService, AuthService authService, PasswordEncoder passwordEncoder,
+                          PropertyService propertyService,  MessagesService messagesService) {
         this.userService = userService;
         this.authService = authService;
         this.passwordEncoder = passwordEncoder;
         this.propertyService = propertyService;
+        this.messagesService = messagesService;
     }
 
     @GetMapping({"/login", "/"})
@@ -128,8 +115,7 @@ public class UserController {
 
     @GetMapping("/dashboard")
     @PreAuthorize("isAuthenticated()")
-    public String showDashboard(Model model)
-    {
+    public String showDashboard(Model model) {
         userService.prepareDashboardModel(model);
         return "dashboard";
     }
@@ -139,6 +125,26 @@ public class UserController {
     public String agentManage(Model model) {
         User user = authService.getCurrentUser();
         model.addAttribute("user", user);
+        return "manage_properties";
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/properties/add")
+    public String addProperty(@ModelAttribute("property") Property property, @RequestParam(value = "file", required = false)
+    List<MultipartFile> files, Model model) {
+
+        if (property == null) {
+            model.addAttribute("fail_message", "Could not add Property. Please try again.");
+            return "add_properties";
+        }
+
+        userService.addedProperty(property);
+        propertyService.addProperty(property);
+        propertyService.addPropertyImages(property, files);
+
+        User user = authService.getCurrentUser();
+        model.addAttribute("user", user);
+        model.addAttribute("success_message", "Added new property successfully!");
         return "manage_properties";
     }
 
@@ -198,25 +204,6 @@ public class UserController {
         return "add_properties";
     }
 
-    @PreAuthorize("hasRole('AGENT')")
-    @PostMapping("/properties/add")
-    public String addProperty(@ModelAttribute("property") Property property, @RequestParam(value = "file", required = false)
-    List<MultipartFile> files, Model model) {
-        User user = authService.getCurrentUser();
-        model.addAttribute("user", user);
-
-        if (property == null) {
-            model.addAttribute("fail_message", "Could not add Property. Please try again.");
-            return "add_properties";
-        }
-
-        userService.addedProperty(property);
-        propertyService.addProperty(property);
-        propertyService.addPropertyImages(property, files);
-        model.addAttribute("success_message", "Added new property successfully!");
-        return "manage_properties";
-    }
-
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myProfile")
     public String showMyProfile(Model model) {
@@ -251,17 +238,54 @@ public class UserController {
     @PreAuthorize("hasAnyRole('AGENT', 'BUYER')")
     @GetMapping("/messages")
     public String showMessages(Model model) {
-        model.addAttribute("user", new User());
+        User user = authService.getCurrentUser();
+        model.addAttribute("user", user);
+        List<Property> properties = user.getPropertyList();
+
+        List<Messages> messages = new ArrayList<>();
+        for (Property property : properties) {
+            for (Messages message : property.getMessageList()) {
+                messages.add(message);
+            }
+        }
+
+        model.addAttribute("messages", messages);
         return "messages";
     }
 
+    @PreAuthorize("hasRole('BUYER')")
+    @PostMapping("/buyer/sendMessageToAgent")
+    public String sendMessageToAgent(@RequestParam("msg") String msg ,@RequestParam("prop") long id, Model model) {
+        Property prop = propertyService.getPropertyById(id);
+        long agentId = propertyService.getAgent(prop);
+        User agent = userService.getUserById(agentId);
+
+        Messages sentMessages = new Messages(msg);
+
+        agent.addMessage(sentMessages);
+        sentMessages.setSender(authService.getCurrentUser());
+
+        prop.addMessage(sentMessages);
+        sentMessages.setProperty(prop);
+        messagesService.addMessages(sentMessages);
+
+        model.addAttribute("sent_agent_worked", "Message sent to agent!");
+        model.addAttribute("user", authService.getCurrentUser());
+        model.addAttribute("property", prop);
+
+        if (userService.isFavorited(authService.getCurrentUser(), prop)) {
+            model.addAttribute("showRemoveFavoriteButton", true);
+        } else {
+            model.addAttribute("showAddFavoriteButton", true);
+        }
+        return "property_view";
+    }
+    
 
     @GetMapping("/properties/list")
     @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
     public String browseProperties(Model model) {
-
         List<Property> properties = userService.getAllProperties();
-
         model.addAttribute("properties", properties);
         model.addAttribute("count", properties.size());
         return "browse_properties";

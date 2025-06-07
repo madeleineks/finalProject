@@ -2,7 +2,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
-  <title> Agent Dashboard </title>
+  <title> Browse Properties </title>
   <link rel="stylesheet" th:href="@{/css/property_style.css}"/>
 </head>
 
@@ -61,7 +61,7 @@
 
 
   <div class = box1 th:each="property, props : ${properties}">
-    <img class="image" th:src="'../images/PropertyImages/' + ${property.title} + '/' + ${property.getPropertyImages().getFirst().getImageFileName()}"
+    <img class="image" th:src="'../images/' + ${property.getPropertyImages().getFirst().getImageFileName()}"
          alt="Default Image" />
     <h1 class="title" th:text="${property.title}"></h1>
     <h1 class="property_text" th:text="'Price: $' + ${property.price}"></h1>
@@ -72,7 +72,7 @@
     </form>
   </div><br><br><br>
 
-  <div th:replace="fragments :: footer"></div>
+
 
 </body>
 

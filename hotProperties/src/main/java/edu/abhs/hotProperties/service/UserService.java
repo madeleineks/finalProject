@@ -12,39 +12,23 @@ public interface UserService {
     List<Property> getProperties(User user);
     boolean emailExists(String email);
     void saveUser(User user);
-
     List<Property> getAllProperties();
-
     Property getPropertyById(Long id);
-
-    List<Property> findPropertyWithAllFilters(String zipcode, String minSqFt, String minPrice,
-                                              String maxPrice);
-
+    List<Property> findPropertyWithAllFilters(String zipcode, String minSqFt, String minPrice, String maxPrice);
     List<Property> findPropertyByFiltersNoMinMaxAsc(String zipcode, String minSqFt);
-
     List<Property> findPropertyByFiltersNoMinAsc(String zipcode, String minSqFt, String maxPrice);
-
     List<Property> findPropertyByFiltersNoMaxAsc(String zipcode, String minSqFt, String minPrice);
-
     List<Property> findPropertyByFiltersNoMinMaxDesc(String zipcode, String minSqFt);
-
     List<Property> findPropertyByFiltersNoMinDesc(String zipcode, String minSqFt, String maxPrice);
-
     List<Property> findPropertyByFiltersNoMaxDesc(String zipcode, String minSqFt, String minPrice);
-
     List<Property> findPropertyWithAllFiltersDesc(String zipcode, String minSqFt, String minPrice, String maxPrice);
-
     List<Favorite> getUsersFavorites(User u);
-
     Favorite getSpecificFavorite(User u, Long id);
-
     void removeFavorite(Favorite favorite);
-
     void addFavorite(Favorite favorite);
-
     boolean isFavorited(User u, Property property);
     void updateProfile(User newUser);
     void removeProperty(Property property);
     void addedProperty(Property property);
-
+    User getUserById(long id);
 }

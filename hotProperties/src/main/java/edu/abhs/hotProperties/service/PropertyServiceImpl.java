@@ -84,5 +84,10 @@ public class PropertyServiceImpl implements PropertyService {
 
     }
 
+    @Override
+    public long getAgent(Property property) {
+        return propertyRepository.findUserIdByPropertyId(property.getId());
+    }
+
 
 }

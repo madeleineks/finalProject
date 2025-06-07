@@ -66,25 +66,16 @@ body {
     margin-left: 5px;
 }
 
-.box1 {
-    margin: 20px auto;
-    width: 80%;
-    text-align: center;
-    border-radius: 10px;
-    padding: 20px;
-    background-color: rgb(241, 241, 241);
-    border: 3px solid rgba(0, 74, 161, 0.66);
-    position: relative;
-}
 
 .box1 {
     margin: 20px auto;
-    width: 80%;
     text-align: center;
-    border-radius: 10px;
     padding: 20px;
-    background-color: rgb(241, 241, 241);
-    border: 3px solid rgba(0, 74, 161, 0.66);
+    width: 80%;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    position: relative;
 }
 
 #dash_button {
@@ -293,4 +284,39 @@ th, td {
 
 .links{
     text-decoration: none;
+}
+
+.blue_button {
+    background-color: rgb(43, 109, 179);
+    height: 40px;
+    width: 120px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    color: rgb(255, 255, 255);
+    border: 0;
+}
+
+.blue_button:hover {
+    background-color: rgb(30, 76, 124);
+}
+
+#message_form {
+    text-align: left;
+    padding-left: 40px;
+    width: 1450px;
+    gap: 10px;
+    margin-bottom: 40px
+}
+
+#message_button {
+    margin-top: 20px;
+}
+
+.success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
 }

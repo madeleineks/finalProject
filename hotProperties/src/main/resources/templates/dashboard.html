@@ -41,9 +41,12 @@
       <li th:if="${#authorization.expression('hasAnyRole(''AGENT'', ''BUYER'')')}">
         <a id="message" th:href="@{/messages}" style="color: #0056b3">Messages</a>
       </li>
-        <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
-            <a th:href="@{/favorites}" style="color: #0056b3; text-decoration: none" th:text= "'Favorites (' + ${favCount} + ')'">Favorites</a>
-        </li>
+      <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
+        <a th:href="@{/properties/list}" style="color: #0056b3; text-decoration: none">Browse Properties</a>
+      </li>
+      <li class=links th:if="${#authorization.expression('hasRole(''BUYER'')')}">
+          <a th:href="@{/favorites}" style="color: #0056b3; text-decoration: none" th:text= "'Favorites (' + ${favCount} + ')'">Favorites</a>
+      </li>
 
     </ul>
     <br>

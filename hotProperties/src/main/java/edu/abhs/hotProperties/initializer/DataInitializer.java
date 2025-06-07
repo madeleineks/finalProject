@@ -12,7 +12,6 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.util.List;
 
@@ -24,6 +23,7 @@ public class DataInitializer {
     private final PropertyImageRepository propertyImageRepository;
     private final PasswordEncoder passwordEncoder;
     private final FavoriteRepository favoriteRepository;
+
 
     @Autowired
     public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, FavoriteRepository favoriteRepository, PasswordEncoder passwordEncoder) {
@@ -173,6 +173,8 @@ public class DataInitializer {
 
                 for (File imageList : titleDir) {
                     for (Property property : properties) {
+                        u3.addProperty(property);
+                        property.setUser(u3);
                         if (property.getTitle().equals(imageList.getName())) {
                             File[] allFiles = imageList.listFiles();
                             for(File files : allFiles)
@@ -180,13 +182,13 @@ public class DataInitializer {
                                 PropertyImage currImage = new PropertyImage(files.getName());
                                 property.addPropertyImage(currImage);
                                 currImage.setProperty(property);
+
                                 propertyImageRepository.save(currImage);
                             }
                         }
                     }
-
-
                 }
+                userRepository.save(u3);
             } catch (Exception e) {
                 e.printStackTrace();
             }

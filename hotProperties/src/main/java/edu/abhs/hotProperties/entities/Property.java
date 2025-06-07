@@ -128,4 +128,10 @@ public class Property {
     public void setMessageList(List<Messages> messageList) {
         this.messageList = messageList;
     }
+
+    public void addMessage(Messages messages) {
+        this.messageList.add(messages);
+    }
+
+
 }

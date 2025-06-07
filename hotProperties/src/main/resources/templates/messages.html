@@ -21,12 +21,11 @@
             </thead>
 
             <tbody>
-
-            <tr th:each="message, messages : ${user.getMessageList()}">
+            <tr th:each="message, messages : ${messages}">
                 <td th:text="${message.property}"></td>
-                <td th:text="'$' + ${message.reply}"></td>
+                <td th:text="${message.reply}"></td>
                 <td th:text="${message.timestamp}"></td>
-                <td th:text="${messages.message}"></td>
+                <td th:text="${message.message}"></td>
                 <td>
                     <button id="del_prop" class="red_button" type="submit">Delete</button>
                 </td>

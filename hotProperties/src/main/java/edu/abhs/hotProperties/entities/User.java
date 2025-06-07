@@ -45,7 +45,6 @@ public class User implements UserDetails {
     private List<Property> propertyList = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonIgnore
     private List<Messages> messageList = new ArrayList<>();
 
     public void setId(Long id) {
@@ -180,5 +179,9 @@ public class User implements UserDetails {
 
     public void removeProperty(Property property) {
         propertyList.remove(property);
+    }
+
+    public void addMessage(Messages messages) {
+        this.messageList.add(messages);
     }
 }

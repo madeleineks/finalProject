@@ -3,6 +3,7 @@ package edu.abhs.hotProperties.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,6 +31,14 @@ public class Messages {
 
     @Column(nullable = true)
     String reply;
+
+
+    public Messages(String message) {
+        this.message = message;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public Messages() {}
 
     public Long getId() {
         return id;

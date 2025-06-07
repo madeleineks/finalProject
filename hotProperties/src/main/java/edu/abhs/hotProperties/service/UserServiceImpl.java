@@ -60,6 +60,10 @@ public class UserServiceImpl implements UserService {
         property.setUser(user);
     }
 
+    @Override
+    public User getUserById(long id) {
+        return userRepository.findUserById(id);
+    }
 
 
     @Override

@@ -1,9 +1,8 @@
 package edu.abhs.hotProperties.service;
 
 import edu.abhs.hotProperties.entities.Property;
-import edu.abhs.hotProperties.entities.PropertyImage;
+import edu.abhs.hotProperties.entities.User;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 public interface PropertyService {
@@ -13,6 +12,6 @@ public interface PropertyService {
     void deletePropertyImage(Property property, long imageId);
     Property getPropertyById(long id);
     void updateProperty(Property newProperty, Property property);
-
+    long getAgent (Property property);
 
 }

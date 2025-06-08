@@ -38,7 +38,6 @@ admin@email.com/admin123
   - AuthServiceImpl.java: Hamzeh, Zach, Joe
   - PropertyServiceImpl: Hamzeh
   - PropertyImageServiceImpl: Hamzeh
-  - AuthServiceImpl.java: Hamzeh, Zach, and Joe
   - CustomUserDetailsService.java: Hamzeh
   - CustomUserDetailsServiceImpl.java: Hamzeh & Joe
   - UserService.java: All
@@ -56,11 +55,12 @@ admin@email.com/admin123
   - dashboard_style.css: Hamzeh, Zach, Madeleine (support)
   - login.css & HTML: Joe
   - profile_style.css: Hamzeh
-  - property_style.css: 
+  - property_style.css: Zach
   - 
 - templates
   - add_agent.html: Madeleine
   - add_properties.html: Hamzeh
+  - agentViewMessage.html: Hamzeh
   - all_users.html: Madeleine
   - browse_properties.html: Hamzeh
   - dashboard.html: All

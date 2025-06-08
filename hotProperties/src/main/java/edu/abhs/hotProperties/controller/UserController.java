@@ -42,6 +42,7 @@ public class UserController {
     PropertyService propertyService;
     MessagesService messagesService;
 
+
     @Autowired
     public UserController(UserService userService, AuthService authService, PasswordEncoder passwordEncoder,
                           PropertyService propertyService,  MessagesService messagesService) {
@@ -190,7 +191,13 @@ public class UserController {
     @PostMapping("/deleteProperty")
     public String deleteProperty(@RequestParam("id") long id, Model model) {
         Property property=  propertyService.getPropertyById(id);
+
+        propertyService.deletePropertyImages(property);
         userService.removeProperty(property);
+
+
+        propertyService.deleteProperty(property);
+
         model.addAttribute("successMessage", "Property removed successfully");
         model.addAttribute("user", authService.getCurrentUser());
         return "manage_properties";

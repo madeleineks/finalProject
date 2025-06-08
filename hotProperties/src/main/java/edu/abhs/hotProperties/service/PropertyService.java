@@ -13,5 +13,7 @@ public interface PropertyService {
     Property getPropertyById(long id);
     void updateProperty(Property newProperty, Property property);
     long getAgent (Property property);
+    void deletePropertyImages(Property property);
+    void deleteProperty(Property property);
 
 }

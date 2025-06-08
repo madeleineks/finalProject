@@ -29,17 +29,19 @@ public class UserServiceImpl implements UserService {
 
     private final AuthService authService;
     private final MessagesService messagesService;
+    private final PropertyService propertyService;
     UserRepository userRepository;
     PropertyRepository propertyRepository;
     FavoriteRepository favoriteRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository, AuthService authService, FavoriteRepository favoriteRepository, MessagesService messagesService) {
+    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository, AuthService authService, FavoriteRepository favoriteRepository, MessagesService messagesService, PropertyService propertyService) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.authService = authService;
         this.favoriteRepository = favoriteRepository;
         this.messagesService = messagesService;
+        this.propertyService = propertyService;
     }
 
     @Override
@@ -195,14 +197,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeProperty(Property property) {
         User user = authService.getCurrentUser();
-
-        Favorite favorite = favoriteRepository.findByProperty(property);
-        if (favorite != null) {
-            favoriteRepository.delete(favorite);
-        }
         user.removeProperty(property);
         userRepository.save(user);
     }
+
     private CurrentUserContext getCurrentUserContext() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();

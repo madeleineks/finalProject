@@ -1,11 +1,10 @@
 package edu.abhs.hotProperties.service;
 
+import edu.abhs.hotProperties.entities.Favorite;
 import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.entities.PropertyImage;
 import edu.abhs.hotProperties.entities.User;
-import edu.abhs.hotProperties.repository.PropertyImageRepository;
-import edu.abhs.hotProperties.repository.PropertyRepository;
-import edu.abhs.hotProperties.repository.UserRepository;
+import edu.abhs.hotProperties.repository.*;
 import edu.abhs.hotProperties.utils.CurrentUserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -24,12 +23,17 @@ public class PropertyServiceImpl implements PropertyService {
     private final AuthService authService;
     PropertyRepository propertyRepository;
     PropertyImageRepository propertyImageRepository;
+    FavoriteRepository favoriteRepository;
+    MessagesRepository messagesRepository;
 
     @Autowired
-    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, AuthService authService) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository,
+                               AuthService authService,  FavoriteRepository favoriteRepository,  MessagesRepository messagesRepository) {
         this.propertyRepository = propertyRepository;
         this.propertyImageRepository = propertyImageRepository;
         this.authService = authService;
+        this.favoriteRepository = favoriteRepository;
+        this.messagesRepository = messagesRepository;
     }
 
     @Override
@@ -87,6 +91,24 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public long getAgent(Property property) {
         return propertyRepository.findUserIdByPropertyId(property.getId());
+    }
+
+    @Override
+    public void deletePropertyImages(Property property) {
+        List<PropertyImage> images = property.getPropertyImages();
+        propertyImageRepository.deleteAll(images);
+    }
+
+    @Override
+    public void deleteProperty(Property property) {
+        Favorite favorite = favoriteRepository.findByProperty(property);
+        if (favorite != null) {
+            favoriteRepository.delete(favorite);
+        }
+        if (property.getMessageList() != null) {
+            messagesRepository.deleteAll(property.getMessageList());
+        }
+        propertyRepository.delete(property);
     }
 
 

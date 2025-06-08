@@ -198,7 +198,7 @@ public class DataInitializer {
             System.out.println("Initial favorites, inserted successfully");
 
             Messages messages = new Messages();
-            messages.setProperty(p1);
+            messages.setProperty(p9);
             messages.setMessage("Hello, this is a test");
             messages.setTimestamp(LocalDateTime.now());
             messages.setSender(u1);

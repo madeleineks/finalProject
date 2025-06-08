@@ -38,10 +38,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // First, rate limit EVERY request as early as possible:
+
                 .addFilterBefore(globalRateLimiterFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // Then, process JWT authentication:
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .csrf(AbstractHttpConfigurer::disable)

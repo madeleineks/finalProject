@@ -9,11 +9,8 @@ public class JwtSecretGenerator {
     public static void main(String[] args) {
 
         MacAlgorithm alg = Jwts.SIG.HS256;
-
         SecretKey key = alg.key().build();
-
         String base64Key = Encoders.BASE64.encode(key.getEncoded());
-
         System.out.println("Generated Base64-encoded secret key:");
         System.out.println(base64Key);
     }

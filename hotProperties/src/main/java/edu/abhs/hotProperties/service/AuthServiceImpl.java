@@ -67,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
 
         Cookie jwtCookie = new Cookie(jwtCookieName, jwtResponse.getToken());
         jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true); // Enable for HTTPS
+        jwtCookie.setSecure(true);
         jwtCookie.setPath("/");
         jwtCookie.setMaxAge(jwtCookieExpiration);
 

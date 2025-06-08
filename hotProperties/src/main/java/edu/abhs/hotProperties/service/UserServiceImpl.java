@@ -298,4 +298,13 @@ public class UserServiceImpl implements UserService {
     {
         return favoriteRepository.existsByBuyerAndProperty(u, property);
     }
+
+    @Override
+    public void removeFav(List<Favorite> favorites)
+    {
+        for(Favorite fav: favorites)
+        {
+            fav.getBuyer().getFavList().remove(fav);
+        }
+    }
 }

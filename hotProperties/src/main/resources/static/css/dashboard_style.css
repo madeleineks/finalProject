@@ -189,15 +189,15 @@ th {
 }
 
 .footer{
-    width: 100%;
-    background-color: rgb(255, 255, 255);
-    height: 100px;
-    position: absolute;
+    height: 70px;
     text-align: left;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.76);
+    position: fixed;
     bottom: 0;
-    border: solid 1px;
-    color: rgba(85, 85, 85, 0.47);
+    margin-left: 5px;
 }
+
 
 .top_row {
     background-color: rgba(136, 130, 130, 0.32);

@@ -54,7 +54,31 @@ public class DataInitializer {
                     "agent@email.com",
                     User.Role.AGENT);
 
-            userRepository.saveAll(List.of(u1, u2, u3));
+            User u4 = new User("Agent2",
+                    "Ag",
+                    passwordEncoder.encode("agent123"),
+                    "agent2@email.com",
+                    User.Role.AGENT);
+
+            User u5 = new User("Agent3",
+                    "Ag",
+                    passwordEncoder.encode("agent123"),
+                    "agent3@email.com",
+                    User.Role.AGENT);
+
+            User u6 = new User("Agent4",
+                    "Ag",
+                    passwordEncoder.encode("agent123"),
+                    "agent4@email.com",
+                    User.Role.AGENT);
+
+            User u7 = new User("Agent_with_No_Properties",
+                    "Ag",
+                    passwordEncoder.encode("agent123"),
+                    "agent5@email.com",
+                    User.Role.AGENT);
+
+            userRepository.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7));
             System.out.println("Initial users, inserted successfully");
 
             Property p1 = new Property("3818 N Christiana Ave",
@@ -186,6 +210,20 @@ public class DataInitializer {
 
 
                 }
+
+                p6.setUser(u4);
+                p7.setUser(u4);
+                p8.setUser(u4);
+                p9.setUser(u4);
+                p10.setUser(u5);
+                p11.setUser(u5);
+                p12.setUser(u5);
+                p13.setUser(u5);
+                p14.setUser(u6);
+                p15.setUser(u6);
+                p16.setUser(u6);
+                p17.setUser(u6);
+
                 userRepository.save(u3);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -194,14 +232,18 @@ public class DataInitializer {
 
             Favorite f = new Favorite(u1, p1);
 
+            u1.getFavList().add(f);
+            p1.getFavList().add(f);
+
+
             favoriteRepository.save(f);
             System.out.println("Initial favorites, inserted successfully");
 
-            Messages messages = new Messages();
-            messages.setProperty(p9);
-            messages.setMessage("Hello, this is a test");
-            messages.setTimestamp(LocalDateTime.now());
-            messages.setSender(u1);
+            Messages messages = new Messages(u1, p1, "Hello, this is a test");
+
+            u1.getMessageList().add(messages);
+            p1.getMessageList().add(messages);
+
             messagesRepository.save(messages);
         }
         else {

@@ -1,15 +1,11 @@
 package edu.abhs.hotProperties.service;
 
 import edu.abhs.hotProperties.entities.Favorite;
+import edu.abhs.hotProperties.entities.Messages;
 import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.entities.PropertyImage;
-import edu.abhs.hotProperties.entities.User;
 import edu.abhs.hotProperties.repository.*;
-import edu.abhs.hotProperties.utils.CurrentUserContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -114,5 +110,20 @@ public class PropertyServiceImpl implements PropertyService {
         propertyRepository.delete(property);
     }
 
+    @Override
+    public void removeFav(List<Favorite> favorites) {
+        for(Favorite fav: favorites)
+        {
+            fav.getProperty().getFavList().remove(fav);
+        }
+    }
+
+    @Override
+    public void removeMessages(List<Messages> messages) {
+        for(Messages m: messages)
+        {
+            m.getProperty().getMessageList().remove(m);
+        }
+    }
 
 }

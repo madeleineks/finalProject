@@ -38,4 +38,6 @@ public interface UserService {
     User getUserById(long id);
     List<Messages> getAgentMessages();
     List<Messages> getBuyerMessages();
+
+    void removeFav(List<Favorite> favorites);
 }

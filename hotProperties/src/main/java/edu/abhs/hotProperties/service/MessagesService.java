@@ -11,6 +11,4 @@ public interface MessagesService {
     void deleteMessages(User user, Property property, Messages messages);
     void reply(String reply, Messages messages);
     boolean propertyHasMessages(Property property);
-
-
 }

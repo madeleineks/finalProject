@@ -27,8 +27,7 @@ public class Property {
     @Column(nullable = false)
     private Integer size;
 
-    @OneToMany(mappedBy = "property")
-    @JsonIgnore
+    @OneToMany(mappedBy = "property", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PropertyImage> propertyImages = new ArrayList<>();
 
     @ManyToOne
@@ -36,8 +35,18 @@ public class Property {
     private User user;
 
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonIgnore
     private List<Messages> messageList = new ArrayList<>();
+
+    public List<Favorite> getFavList() {
+        return favList;
+    }
+
+    public void setFavList(List<Favorite> favList) {
+        this.favList = favList;
+    }
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Favorite> favList = new ArrayList<>();
 
     public Property(String title, double price, String description, String location, Integer size) {
         this.title = title;

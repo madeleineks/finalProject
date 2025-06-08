@@ -195,6 +195,9 @@ public class UserController {
             model.addAttribute("fail_message", "Warning! You have messages for this property.");
             return "manage_properties";
         }
+
+        userService.removeFav(propertyService.getPropertyById(id).getFavList());
+
         Property property = propertyService.getPropertyById(id);
 
         propertyService.deletePropertyImages(property);
@@ -323,6 +326,14 @@ public class UserController {
     @PreAuthorize("hasRole('BUYER')")
     @PostMapping("/buyer/sendMessageToAgent")
     public String sendMessageToAgent(@RequestParam("msg") String msg ,@RequestParam("prop") long id, Model model) {
+        if (propertyService.getPropertyById(id).getUser() == null) {
+            Property prop = propertyService.getPropertyById(id);
+            model.addAttribute("user", authService.getCurrentUser());
+            model.addAttribute("property", prop);
+            model.addAttribute("fail_message", "Could not send message! This property has no Agent.");
+            return "property_view";
+        }
+
         Property prop = propertyService.getPropertyById(id);
         long agentId = propertyService.getAgent(prop);
         User agent = userService.getUserById(agentId);
@@ -460,6 +471,9 @@ public class UserController {
 
         Favorite favorite = userService.getSpecificFavorite(u, id);
 
+        u.getFavList().remove(favorite);
+        propertyService.getPropertyById(id).getFavList().remove(favorite);
+
         userService.removeFavorite(favorite);
 
         return "redirect:/favorites";
@@ -471,6 +485,9 @@ public class UserController {
         User u = authService.getCurrentUser();
 
         Favorite favorite = userService.getSpecificFavorite(u, id);
+
+        u.getFavList().remove(favorite);
+        propertyService.getPropertyById(id).getFavList().remove(favorite);
 
         userService.removeFavorite(favorite);
 
@@ -499,6 +516,8 @@ public class UserController {
         if(!favorited)
         {
             Favorite favorite = new Favorite(u, p);
+            u.getFavList().add(favorite);
+            propertyService.getPropertyById(id).getFavList().add(favorite);
             userService.addFavorite(favorite);
         }
 
@@ -519,6 +538,7 @@ public class UserController {
             if (result.hasErrors()) {
                 return "add_agent";
             } else {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
                 userService.addUser(user);
                 redirectAttributes.addFlashAttribute("successMessage", "Agent created successfully");
                 return "redirect:/dashboard";
@@ -538,9 +558,22 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/admin/users/delete")
-    public String handleDeleteUser(@RequestParam("userId") Long userId, Model model,
+    @GetMapping("/admin/users/delete/{userId}")
+    public String handleDeleteUser(@PathVariable("userId") Long userId, Model model,
                                    RedirectAttributes redirectAttributes) {
+        if(!userService.getUserById(userId).getPropertyList().isEmpty())
+        {
+            redirectAttributes.addFlashAttribute("errorMessage", "Agent has properties. Cannot delete agent.");
+            return "redirect:/admin/users";
+        }
+        else if(userService.getUserById(userId).getRole() == User.Role.ADMIN)
+        {
+            redirectAttributes.addFlashAttribute("errorMessage", "Cannot remove users with Admin role");
+            return "redirect:/admin/users";
+        }
+        propertyService.removeFav(userService.getUserById(userId).getFavList());
+        propertyService.removeMessages(userService.getUserById(userId).getMessageList());
+
         userService.deleteUser(userId);
         redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully");
         return "redirect:/admin/users";

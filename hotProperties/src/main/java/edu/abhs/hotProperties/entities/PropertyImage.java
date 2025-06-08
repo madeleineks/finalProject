@@ -15,7 +15,6 @@ public class PropertyImage {
 
     @ManyToOne
     @JoinColumn(name = "property_id")
-    @JsonIgnore
     private Property property;
 
     public PropertyImage() {}

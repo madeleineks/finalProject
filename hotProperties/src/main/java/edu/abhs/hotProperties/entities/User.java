@@ -1,5 +1,6 @@
 package edu.abhs.hotProperties.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,11 +46,22 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Property> propertyList = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Messages> messageList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Favorite> favList = new ArrayList<>();
+
+    public List<Favorite> getFavList() {
+        return favList;
+    }
+
+    public void setFavList(List<Favorite> favList) {
+        this.favList = favList;
+    }
 
     public void setId(Long id) {
         this.id = id;

@@ -1,5 +1,7 @@
 package edu.abhs.hotProperties.service;
 
+import edu.abhs.hotProperties.entities.Favorite;
+import edu.abhs.hotProperties.entities.Messages;
 import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.entities.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,4 +18,7 @@ public interface PropertyService {
     void deletePropertyImages(Property property);
     void deleteProperty(Property property);
 
+    void removeFav(List<Favorite> favorites);
+
+    void removeMessages(List<Messages> messages);
 }

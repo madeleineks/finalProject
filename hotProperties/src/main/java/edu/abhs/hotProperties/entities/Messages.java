@@ -15,25 +15,30 @@ public class Messages {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
-    User sender;
-
-    @Column(nullable = false)
-    String message;
+    private User sender;
 
     @ManyToOne
     @JoinColumn(name = "property_id")
-    @JsonIgnore
-    Property property;
+    private Property property;
 
     @Column(nullable = false)
-    LocalDateTime timestamp;
+    private String message;
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 
     @Column(nullable = true)
-    String reply;
+    private String reply;
 
 
     public Messages(String message) {
+        this.message = message;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public Messages(User u, Property p, String message) {
+        this.sender = u;
+        this.property = p;
         this.message = message;
         this.timestamp = LocalDateTime.now();
     }

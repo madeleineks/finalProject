@@ -1,5 +1,5 @@
 ## Admin Username/Password
-
+admin@email.com/admin123
 ## Additional Features
 (1) Messaging, (2) Favorites, (3) Deleting Properties and Users, (4) Browse Property Filters
 

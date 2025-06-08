@@ -5,64 +5,73 @@
 
 ## Contribution Summary
 - config
-  - CustomAccessDeniedHandler.java
-  - CustomAuthenticationEntryPoint.java
+  - CustomAccessDeniedHandler.java: 
+  - CustomAuthenticationEntryPoint.java: 
   - SecurityConfig.java
 - controller
   - UserController.java: All
 - dtos
-  - ApiExceptionDto.java
-  - JwtResponse.java
-  - LoginRequest.java
+  - ApiExceptionDto.java: 
+  - JwtResponse.java: 
+  - LoginRequest.java: 
 - entities
-  - Favorite.java
-  - Property.java
-  - PropertyImage.java
-  - User.java: Madeleine (support)
+  - Property.java: Hamzeh & Zach
+  - Favorite.java: Zach 
+  - PropertyImage.java: Hamzeh & Zach
+  - Messages: Hamzeh
+  - User.java: Hamzeh, Zach, Madeleine (support)
 - exceptions
-  - NotFoundException.java: Madeleine
+  - NotFoundException.java: Madeleine 
   - UserAlreadyExistsException.java: Madeleine
 - initializer
-  - DataInitializer.java
+  - DataInitializer.java: Zach & Hamzeh 
 - jwt
-  - JwtUtil.java
+  - JwtUtil.java: 
 - repository
-  - FavoriteRepository.java
-  - PropertyImageRepository.java
-  - PropertyRepository.java
-  - UserRepository.java
+  - FavoriteRepository.java: Zach
+  - PropertyImageRepository.java: Hamzeh
+  - PropertyRepository.java: Hamzeh & Zach
+  - UserRepository.java: ALL
+  - MessagesRepository: Hamzeh
 - service
-  - AuthService.java
-  - AuthServiceImpl.java
-  - CustomUserDetailsService.java
-  - CustomUserDetailsServiceImpl.java
+  - AuthService: Hamzeh
+  - AuthServiceImpl.java: Hamzeh, Zach, Joe
+  - PropertyServiceImpl: Hamzeh
+  - PropertyImageServiceImpl: Hamzeh
+  - AuthServiceImpl.java: Hamzeh, Zach, and Joe
+  - CustomUserDetailsService.java: Hamzeh
+  - CustomUserDetailsServiceImpl.java: Hamzeh & Joe
   - UserService.java: All
   - UserServiceImpl.java: All
+  - MessageServices: Hamzeh
+  - FavoritesServices: Zach
 - utils
-  - CurrentUserContext.java
-  - GlobalRateLimiterFilter.java
-  - JwtAuthenticationFilter.java
-  - JwtSecretGenerator.java
+  - CurrentUserContext.java: Hamzeh
+  - GlobalRateLimiterFilter.java: Hamzeh
+  - JwtAuthenticationFilter.java: : Hamzeh
+  - JwtSecretGenerator.java: Hamzeh
 
-- css
+- HTML 
   - admin_style.css: Madeleine
-  - dashboard_style.css: Madeleine (support)
-  - login.css
-  - profile_style.css
-  - property_style.css
+  - dashboard_style.css: Hamzeh, Zach, Madeleine (support)
+  - login.css & HTML: Joe
+  - profile_style.css: Hamzeh
+  - property_style.css: 
+  - 
 - templates
   - add_agent.html: Madeleine
-  - add_properties.html
+  - add_properties.html: Hamzeh
   - all_users.html: Madeleine
-  - browse_properties.html
+  - browse_properties.html: Hamzeh
   - dashboard.html: All
-  - edit_profile.html
-  - favorites.html
-  - fragments.html
-  - index.html
-  - login.html
-  - manage_properties.html
-  - messages.html
-  - my_profile.html
-  - property_view.html
-  - register.html
+  - edit_profile.html: Hamzeh & Zach
+  - edit_property.html: Hamzeh
+  - favorites.html: Zach
+  - fragments.html: Hamzeh
+  - login.html: Joe
+  - manage_properties.html: Hamzeh
+  - messages.html: Hamzeh
+  - messagesBuyer.html: Hamzeh
+  - my_profile.html: Hamzeh & Zach
+  - property_view.html: Zach
+  - register.html: Joe

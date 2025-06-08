@@ -137,5 +137,9 @@ public class Property {
         this.messageList.remove(messages);
     }
 
+    public void removeAllMessages() {
+        this.messageList.clear();
+    }
+
 
 }

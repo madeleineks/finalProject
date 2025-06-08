@@ -20,20 +20,21 @@ import java.util.List;
 @Service
 public class PropertyServiceImpl implements PropertyService {
 
-    private final AuthService authService;
+
     PropertyRepository propertyRepository;
     PropertyImageRepository propertyImageRepository;
     FavoriteRepository favoriteRepository;
     MessagesRepository messagesRepository;
+    UserRepository userRepository;
 
     @Autowired
     public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository,
-                               AuthService authService,  FavoriteRepository favoriteRepository,  MessagesRepository messagesRepository) {
+                               UserRepository userRepository,  FavoriteRepository favoriteRepository,  MessagesRepository messagesRepository) {
         this.propertyRepository = propertyRepository;
         this.propertyImageRepository = propertyImageRepository;
-        this.authService = authService;
         this.favoriteRepository = favoriteRepository;
         this.messagesRepository = messagesRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -106,7 +107,8 @@ public class PropertyServiceImpl implements PropertyService {
             favoriteRepository.delete(favorite);
         }
         if (property.getMessageList() != null) {
-            messagesRepository.deleteAll(property.getMessageList());
+            property.removeAllMessages();
+            messagesRepository.deleteByPropertyId(property.getId());
         }
         propertyRepository.delete(property);
     }

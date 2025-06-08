@@ -1,10 +1,17 @@
 package edu.abhs.hotProperties.controller;
 
+import edu.abhs.hotProperties.entities.Messages;
+import edu.abhs.hotProperties.entities.Favorite;
+import edu.abhs.hotProperties.entities.Property;
+import edu.abhs.hotProperties.entities.User;
+import edu.abhs.hotProperties.service.*;
 import edu.abhs.hotProperties.entities.*;
 import edu.abhs.hotProperties.service.UserService;
 import edu.abhs.hotProperties.service.AuthService;
+import io.jsonwebtoken.security.Message;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,8 +19,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -25,22 +39,27 @@ public class UserController {
     UserService userService;
     AuthService authService;
     PasswordEncoder passwordEncoder;
+    PropertyService propertyService;
+    MessagesService messagesService;
 
     @Autowired
-    public UserController(UserService userService, AuthService authService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, AuthService authService, PasswordEncoder passwordEncoder,
+                          PropertyService propertyService,  MessagesService messagesService) {
         this.userService = userService;
         this.authService = authService;
         this.passwordEncoder = passwordEncoder;
+        this.propertyService = propertyService;
+        this.messagesService = messagesService;
     }
 
-    @GetMapping("/login")
+    @GetMapping({"/login", "/"})
     public String login(Model model) {
         model.addAttribute("user", new User());
         return "login";
     }
 
-    @PostMapping("/login")
-    public String processLogin(@ModelAttribute("user") User user, HttpServletResponse response, org.springframework.ui.Model model) {
+    @PostMapping("/login" )
+    public String processLogin(@ModelAttribute("user") User user, HttpServletResponse response, Model model) {
         try {
             Cookie jwtCookie = authService.loginAndCreateJwtCookie(user);
             response.addCookie(jwtCookie);
@@ -104,55 +123,226 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/properties/add")
+    public String addProperty(@ModelAttribute("property") Property property, @RequestParam(value = "file", required = false)
+    List<MultipartFile> files, Model model) {
+
+        if (property == null) {
+            model.addAttribute("fail_message", "Could not add Property. Please try again.");
+            return "add_properties";
+        }
+
+        try {
+            userService.addedProperty(property);
+            propertyService.addProperty(property);
+            propertyService.addPropertyImages(property, files);
+
+            User user = authService.getCurrentUser();
+            model.addAttribute("user", user);
+            model.addAttribute("success_message", "Added new property successfully!");
+        } catch (Exception e) {
+            model.addAttribute("fail_message", e.getMessage());
+            return "add_properties";
+        }
+        return "manage_properties";
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
+    @GetMapping("/editProperty")
+    public String showEditProperty(@RequestParam("title") String title, Model model) {
+        Property property = propertyService.getByTitle(title);
+        model.addAttribute("property", property);
+        model.addAttribute("newProperty", new Property());
+        return "edit_property";
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/editProperty")
+    public String editProperty(@ModelAttribute("newProperty") Property newProperty,@RequestParam("id") long id,
+                               @RequestParam(value = "file", required = false)
+    List<MultipartFile> files, Model model)  {
+        User user = authService.getCurrentUser();
+        Property property = propertyService.getPropertyById(id);
+        propertyService.updateProperty(newProperty, property);
+        propertyService.addPropertyImages(property, files);
+        model.addAttribute("successMessage", "Property updated successfully!");
+        model.addAttribute("user", user);
+        return "manage_properties";
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/deletePropertyImage")
+    public String deletePropertyImage(@RequestParam("propsid") long id, @RequestParam("imageId") long imageId, Model model) {
+
+        Property property = propertyService.getPropertyById(id);
+
+        propertyService.deletePropertyImage(property, imageId);
+        model.addAttribute("property", property);
+        model.addAttribute("newProperty", new Property());
+        model.addAttribute("successMessage", "Property image deleted successfully");
+        return "edit_property";
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/deleteProperty")
+    public String deleteProperty(@RequestParam("id") long id, Model model) {
+        Property property=  propertyService.getPropertyById(id);
+        userService.removeProperty(property);
+        model.addAttribute("successMessage", "Property removed successfully");
+        model.addAttribute("user", authService.getCurrentUser());
+        return "manage_properties";
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
     @GetMapping("/properties/add")
-    public String add(Model model) {
+    public String showAddProperties(Model model) {
         model.addAttribute("property", new Property());
         return "add_properties";
     }
 
-    @PreAuthorize("hasRole('AGENT')")
-    @PostMapping("/properties/add")
-    public String processAdd(@ModelAttribute("property") Property property) {
-        userService.addProperty(property);
-        return "manage_properties";
-    }
-
-    @GetMapping("/profile")
-    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
-    public String viewProfile(Model model) {
-        User user = authService.getCurrentUser();
-        model.addAttribute(user);
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myProfile")
+    public String showMyProfile(Model model) {
+        model.addAttribute("user", authService.getCurrentUser());
         return "my_profile";
     }
 
-    @GetMapping("/profile/edit")
-    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/editProfile")
     public String editProfile(Model model) {
-        User user = authService.getCurrentUser();
-        model.addAttribute(user);
+        model.addAttribute("newUser", new User());
+        model.addAttribute("oldUser", authService.getCurrentUser());
         return "edit_profile";
     }
 
-    @PostMapping("/profile/edit")
-    @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
-    public String editProfile(@ModelAttribute("user") User user, Model model) {
-        User u = authService.getCurrentUser();
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/editProfile")
+    public String editedProfile(@ModelAttribute("newUser") User newUser, Model model) {
 
-        model.addAttribute(u);
-        u.setFirstName(user.getFirstName());
-        u.setLastName(user.getLastName());
+        try {
+            userService.updateProfile(newUser);
+            model.addAttribute("oldUser", authService.getCurrentUser());
+            model.addAttribute("newUser", new User());
+            model.addAttribute("update", "Name Changed successfully!");
 
-        //Update user data
-        userService.saveUser(u);
-        return "my_profile";
+
+        } catch (Exception e) {
+            model.addAttribute("oldUser", authService.getCurrentUser());
+            model.addAttribute("newUser", new User());
+            model.addAttribute("failed", e.getMessage());
+        }
+        return "edit_profile";
     }
+
+    @PreAuthorize("hasRole('AGENT')")
+    @GetMapping("/messages")
+    public String showMessages(Model model) {
+
+        List<Messages> messages = userService.getAgentMessages();
+        User user = authService.getCurrentUser();
+
+        model.addAttribute("user", user);
+        model.addAttribute("messages", messages);
+        return "messages";
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/replyToBuyer")
+    public String replyToBuyer(@RequestParam("reply") String reply, @RequestParam("messageId") long messageId, Model model) {
+        Messages message = messagesService.getMessagesById(messageId);
+        messagesService.reply(reply, message);
+        model.addAttribute("successMessage", "Message replied sent!");
+
+
+        List<Messages> messages = userService.getAgentMessages();
+        model.addAttribute("user", authService.getCurrentUser());
+        model.addAttribute("messages", messages);
+        model.addAttribute("message_sent", "Reply sent to Buyer");
+
+        return "messages";
+    }
+
+    @PreAuthorize("hasRole('BUYER')")
+    @GetMapping("/messagesBuyer")
+    public String showMessagesBuyer(Model model) {
+
+        List<Messages> messages = userService.getBuyerMessages();
+        model.addAttribute("messages", messages);
+        return "messagesBuyer";
+    }
+
+
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("/deleteMessage")
+    @Transactional
+    public String deleteMessage(@RequestParam("id") long id) {
+        Messages message = messagesService.getMessagesById(id);
+        Property property = message.getProperty();
+        User user = message.getSender();
+        messagesService.deleteMessages(user, property, message);
+
+        return "redirect:/messages";
+
+    }
+
+    @PreAuthorize("hasRole('BUYER')")
+    @PostMapping("/deleteMessageBuyer")
+    @Transactional
+    public String deleteMessageBuyer(@RequestParam("id") long id) {
+        Messages message = messagesService.getMessagesById(id);
+        Property property = message.getProperty();
+        User user = message.getSender();
+        messagesService.deleteMessages(user, property, message);
+
+        return "redirect:/messagesBuyer";
+
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
+    @GetMapping("/viewMessage")
+    public String viewMessage(@RequestParam("id") long id, Model model) {
+        Messages message = messagesService.getMessagesById(id);
+        model.addAttribute("message", message);
+        return "agentViewMessage";
+    }
+
+    @PreAuthorize("hasRole('BUYER')")
+    @PostMapping("/buyer/sendMessageToAgent")
+    public String sendMessageToAgent(@RequestParam("msg") String msg ,@RequestParam("prop") long id, Model model) {
+        Property prop = propertyService.getPropertyById(id);
+        long agentId = propertyService.getAgent(prop);
+        User agent = userService.getUserById(agentId);
+
+        Messages sentMessages = new Messages(msg);
+
+        agent.addMessage(sentMessages);
+        sentMessages.setSender(authService.getCurrentUser());
+
+        prop.addMessage(sentMessages);
+        sentMessages.setProperty(prop);
+        messagesService.addMessages(sentMessages);
+
+        model.addAttribute("sent_agent_worked", "Message sent to agent!");
+        model.addAttribute("user", authService.getCurrentUser());
+        model.addAttribute("property", prop);
+
+        if (userService.isFavorited(authService.getCurrentUser(), prop)) {
+            model.addAttribute("showRemoveFavoriteButton", true);
+        } else {
+            model.addAttribute("showAddFavoriteButton", true);
+        }
+        return "property_view";
+    }
+
 
     @GetMapping("/properties/list")
     @PreAuthorize("hasAnyRole('AGENT', 'BUYER', 'ADMIN')")
     public String browseProperties(Model model) {
-
         List<Property> properties = userService.getAllProperties();
-
         model.addAttribute("properties", properties);
         model.addAttribute("count", properties.size());
         return "browse_properties";

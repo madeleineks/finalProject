@@ -1,6 +1,9 @@
 package edu.abhs.hotProperties.service;
 
+import edu.abhs.hotProperties.dtos.AlreadyExistsException;
+import edu.abhs.hotProperties.dtos.BadParamaterException;
 import edu.abhs.hotProperties.entities.Favorite;
+import edu.abhs.hotProperties.entities.Messages;
 import edu.abhs.hotProperties.entities.User;
 import edu.abhs.hotProperties.entities.Property;
 import edu.abhs.hotProperties.exceptions.NotFoundException;
@@ -18,20 +21,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final AuthService authService;
+    private final MessagesService messagesService;
     UserRepository userRepository;
     PropertyRepository propertyRepository;
     FavoriteRepository favoriteRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository, FavoriteRepository favoriteRepository) {
+    public UserServiceImpl(UserRepository userRepository, PropertyRepository propertyRepository, AuthService authService, FavoriteRepository favoriteRepository, MessagesService messagesService) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
+        this.authService = authService;
         this.favoriteRepository = favoriteRepository;
+        this.messagesService = messagesService;
     }
 
     @Override
@@ -39,13 +47,26 @@ public class UserServiceImpl implements UserService {
         return propertyRepository.findPropertyByUser(user);
     }
 
+
+
     @Override
     public void prepareDashboardModel(Model model) {
         CurrentUserContext context = getCurrentUserContext();
+        User user = authService.getCurrentUser();
 
         if(context.user().getRole() == User.Role.BUYER)
         {
+            model.addAttribute("messageCountBuyer", user.getMessageList().size());
             model.addAttribute("favCount", favoriteRepository.countByBuyer(context.user()));
+        }
+        if (context.user().getRole() == User.Role.AGENT) {
+            int messageCount = 0;
+            for (Property property : user.getPropertyList()) {
+                for (Messages message : property.getMessageList()) {
+                    messageCount++;
+                }
+            }
+            model.addAttribute("messageCountAgent", messageCount);
         }
 
         model.addAttribute("user", context.user());
@@ -61,6 +82,58 @@ public class UserServiceImpl implements UserService {
         user.addProperty(property);
         System.out.println(user.getEmail());
     }
+
+    @Override
+    public void addedProperty(Property property) {
+        User user = getCurrentUserContext().user();
+
+        if (property.getTitle() == null || property.getSize() == null || property.getLocation() == null || property.getTitle().isBlank() ||
+                property.getLocation().isBlank() || property.getPrice() <=0 || property.getSize() <= 0
+        ) {
+            throw new BadParamaterException("Please enter all required fields properly.");
+        }
+        for (Property props: user.getProperty()) {
+            if (props.getTitle().equals(property.getTitle())) {
+                throw new AlreadyExistsException("Property with this title already exists.");
+            }
+            if (props.getLocation().equals(property.getLocation())) {
+                throw new AlreadyExistsException("Property with this location already exists.");
+            }
+        }
+        user.addProperty(property);
+        property.setUser(user);
+    }
+
+    @Override
+    public User getUserById(long id) {
+        return userRepository.findUserById(id);
+    }
+
+    @Override
+    public List<Messages> getAgentMessages() {
+        User user = authService.getCurrentUser();
+        List<Property> properties = user.getPropertyList();
+
+        List<Messages> messages = new ArrayList<>();
+        for (Property property : properties) {
+            for (Messages message : property.getMessageList()) {
+                messages.add(message);
+            }
+        }
+        return messages;
+    }
+
+    @Override
+    public List<Messages> getBuyerMessages() {
+        User user = authService.getCurrentUser();
+
+        List<Messages> messages = new ArrayList<>();
+        for (Messages message : user.getMessageList()) {
+            messages.add(message);
+        }
+        return messages;
+    }
+
 
     @Override
     public boolean emailExists(String email) {
@@ -104,6 +177,32 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void updateProfile(User newUser) {
+
+        User oldUser = authService.getCurrentUser();
+
+        if (newUser.getFirstName() == null || newUser.getFirstName().isBlank() ||  newUser.getLastName() == null || newUser.getLastName().isBlank()) {
+            throw new BadParamaterException("Please enter all required fields properly.");
+        }
+
+        oldUser.setFirstName(newUser.getFirstName());
+        oldUser.setLastName(newUser.getLastName());
+
+        userRepository.save(oldUser);
+    }
+
+    @Override
+    public void removeProperty(Property property) {
+        User user = authService.getCurrentUser();
+
+        Favorite favorite = favoriteRepository.findByProperty(property);
+        if (favorite != null) {
+            favoriteRepository.delete(favorite);
+        }
+        user.removeProperty(property);
+        userRepository.save(user);
+    }
     private CurrentUserContext getCurrentUserContext() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -125,7 +224,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Property> findPropertyWithAllFilters(String zipcode, String minSqFt, String minPrice,
-                                                     String maxPrice)
+                                                       String maxPrice)
     {
         return propertyRepository.findPropertyByWithAllFiltersAsc(zipcode, minSqFt, minPrice, maxPrice);
     }

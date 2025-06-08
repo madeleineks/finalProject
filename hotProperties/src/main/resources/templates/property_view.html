@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
 
 <head>
-  <title> Agent Dashboard </title>
+  <title> Property View </title>
   <link rel="stylesheet" th:href="@{/css/property_style.css}"/>
 </head>
 
@@ -17,7 +17,11 @@
 </header>
 
 <div class = box1 >
+  <div class="success" th:if="${sent_agent_worked}">
+    <p th:text="${sent_agent_worked}"></p>
+  </div>
   <h1 class="title" style="font-size: 50px" th:text="${property.title}"></h1>
+
 
   <form method="get" th:action="@{/properties/remove/favorites/} + ${property.id}" th:if="${showRemoveFavoriteButton}">
     <button class="remove_fav" type="submit">Remove from Favorites</button>
@@ -36,12 +40,26 @@
 
   <div class="w3-content w3-display-container">
     <div th:each="image, props : ${property.getPropertyImages()}">
-      <img class="mySlides" th:src="@{/images/PropertyImages/} + ${property.getTitle()} + '/' + ${image.imageFileName}" style="width:100%"></img>
+      <img class="mySlides" th:src="@{/images/} + ${image.imageFileName}" style="width:100%"></img>
     </div>
 
     <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
     <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
   </div><br><br>
+
+  <div id="message_form">
+    <h2 > Contact the Agent</h2>
+    <br>
+    <form method="post" th:action="@{/buyer/sendMessageToAgent}">
+      <label for="msg"></label>
+      <textarea name="msg" id="msg" placeholder="Type your message here." style="width: 1450px; height: 150px"></textarea>
+      <input hidden name="prop" th:value="${property.id}">
+
+      <div id="message_button">
+        <button class="blue_button" type="submit" style="width: 150px; top: 20px">Send Message</button>
+      </div>
+    </form>
+  </div>
 
   <ul class="no-bullets">
     <li class=links>
@@ -71,7 +89,6 @@
   }
 </script>
 
-<div th:replace="fragments :: footer"></div>
 </body>
 
 </html>

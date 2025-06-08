@@ -2,7 +2,6 @@ package edu.abhs.hotProperties.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +34,10 @@ public class Property {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<Messages> messageList = new ArrayList<>();
 
     public Property(String title, double price, String description, String location, Integer size) {
         this.title = title;
@@ -113,4 +116,26 @@ public class Property {
     public void addPropertyImage(PropertyImage propertyImage) {
         this.propertyImages.add(propertyImage);
     }
+
+    public void removePropertyImage(PropertyImage propertyImage) {
+        this.propertyImages.remove(propertyImage);
+    }
+
+    public List<Messages> getMessageList() {
+        return messageList;
+    }
+
+    public void setMessageList(List<Messages> messageList) {
+        this.messageList = messageList;
+    }
+
+    public void addMessage(Messages messages) {
+        this.messageList.add(messages);
+    }
+
+    public void removeMessage(Messages messages) {
+        this.messageList.remove(messages);
+    }
+
+
 }

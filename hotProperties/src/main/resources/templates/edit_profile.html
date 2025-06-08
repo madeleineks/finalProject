@@ -1,42 +1,60 @@
 <!DOCTYPE html>
 
-<html lang="en">
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-
 <head>
-  <title> My Profile </title>
-  <link rel="stylesheet" th:href="@{/css/profile_style.css}"/>
+  <title> Edit Profile </title>
+  <link rel="stylesheet" th:href="@{/css/dashboard_style.css}"/>
 </head>
 
-<body >
+<body>
+  <div th:replace="fragments :: header"></div>
 
-<div th:replace="fragments :: header"></div>
+  <header>
+    <form method="get" th:action="@{/dashboard}">
+      <button class="blue_button" id="dash_button" type="submit">Dashboard</button>
+    </form>
+  </header>
 
-<form method="get" th:action="@{/dashboard}">
-  <button id="dash_button" type="submit">To Dashboard</button>
-</form>
 
-</h1>
 
-<div class = box1 >
+  <div class="box3">
+    <h1 style="font-size: 35px; padding-bottom: 30px">Edit Your Profile</h1>
 
-  <h1>Welcome Back</h1>
+    <div class="failure" th:if="${failed}">
+      <p th:text="${failed}"></p>
+    </div>
+    <div class="success" th:if="${update}">
+      <p th:text="${update}"></p>
+    </div>
+    <form id="edit_profile" method="post" th:action="@{/editProfile}" th:object="${newUser}" enctype="multipart/form-data">
 
-  <form method="post" th:action="@{/profile/edit}" th:object="${user}">
-    <label class="profile_text" for="firsname">First Name</label>
-    <input id="firsname" th:field="*{firstName}" type="text" required/>
+      <div class="inp_field">
+        <label for="firstName">First Name</label>
+        <br>
+        <input th:placeholder="${oldUser.firstName}"  class="inp_box" id="firstName" th:field="${newUser.firstName}" type="text"/>
+      </div>
 
-    <label class="profile_text" for="lastname">Last Name</label>
-    <input id="lastname"  th:field="*{lastName}" type="text" required/><br><br>
+      <div class="inp_field">
+        <label for="lastName">Last Name</label>
+        <br>
+        <input th:placeholder="${oldUser.lastName}" class="inp_box" id="lastName" th:field="${newUser.lastName}" type="text" />
+      </div>
 
-    <button class="left_button" type="submit">Save Changes</button>
-  </form>
 
-  <form method="get" th:action="@{/profile}">
-    <button class="right_button" type="submit">Cancel</button>
-  </form>
-</div>
+      <br>
+      <div class="edit_buttons">
+        <button id="save_changes" class="green_button" type="submit">Save</button>
 
-<div th:replace="fragments :: footer"></div>
+
+      </div>
+
+    </form>
+    <form method="get" th:action="@{/myProfile}">
+      <button class="blue_button" id="Cancel" type="submit">Cancel</button>
+    </form>
+  </div>
+
+  <div class="footer" th:replace="fragments :: footer"></div>
 </body>
+
 </html>

@@ -1,11 +1,11 @@
 package edu.abhs.hotProperties.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,6 +48,29 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Property> propertyList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Messages> messageList = new ArrayList<>();
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Property> getPropertyList() {
+        return propertyList;
+    }
+
+    public void setPropertyList(List<Property> propertyList) {
+        this.propertyList = propertyList;
+    }
+
+    public List<Messages> getMessageList() {
+        return messageList;
+    }
+
+    public void setMessageList(List<Messages> messageList) {
+        this.messageList = messageList;
+    }
 
     public User() { }
 
@@ -156,5 +179,17 @@ public class User implements UserDetails {
 
     public void addProperty(Property property) {
         propertyList.add(property);
+    }
+
+    public void removeProperty(Property property) {
+        propertyList.remove(property);
+    }
+
+    public void addMessage(Messages messages) {
+        this.messageList.add(messages);
+    }
+
+    public void removeMessage(Messages messages) {
+        this.messageList.remove(messages);
     }
 }

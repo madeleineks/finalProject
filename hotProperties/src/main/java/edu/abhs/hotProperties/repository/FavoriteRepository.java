@@ -18,4 +18,5 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
     boolean existsByBuyerAndProperty(User u, Property property);
 
     Long countByBuyer(User user);
+    Favorite findByProperty(Property property);
 }

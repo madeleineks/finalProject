@@ -1,6 +1,5 @@
 package edu.abhs.hotProperties.service;
 
-import edu.abhs.hotProperties.entities.User;
 import edu.abhs.hotProperties.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

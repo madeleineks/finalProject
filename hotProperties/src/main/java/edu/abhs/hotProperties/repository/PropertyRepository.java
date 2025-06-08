@@ -56,4 +56,10 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
     @Query(value = "select * from property p where p.location like %:zipcode% and p.size >= :minSqFt and p.price <= :maxPrice order by price desc",
             nativeQuery = true)
     List<Property> findPropertyLessThanMaxPriceDesc(@Param("zipcode") String zipcode, @Param("minSqFt") String minSqFt, @Param("maxPrice") String maxPrice);
+    Property findPropertyById(long id);
+    void deletePropertyById(long id);
+
+    @Query("select p.user.id from Property p where p.id = :propertyId")
+    Long findUserIdByPropertyId(@Param("propertyId") Long propertyId);
+
 }

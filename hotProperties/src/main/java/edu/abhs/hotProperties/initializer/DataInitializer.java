@@ -1,18 +1,13 @@
 package edu.abhs.hotProperties.initializer;
 
-import edu.abhs.hotProperties.entities.Favorite;
-import edu.abhs.hotProperties.entities.PropertyImage;
-import edu.abhs.hotProperties.entities.User;
-import edu.abhs.hotProperties.entities.Property;
-import edu.abhs.hotProperties.repository.FavoriteRepository;
-import edu.abhs.hotProperties.repository.PropertyImageRepository;
-import edu.abhs.hotProperties.repository.PropertyRepository;
-import edu.abhs.hotProperties.repository.UserRepository;
+import edu.abhs.hotProperties.entities.*;
+import edu.abhs.hotProperties.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -23,20 +18,23 @@ public class DataInitializer {
     private final PropertyImageRepository propertyImageRepository;
     private final PasswordEncoder passwordEncoder;
     private final FavoriteRepository favoriteRepository;
+    private final MessagesRepository messagesRepository;
 
 
     @Autowired
-    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, FavoriteRepository favoriteRepository, PasswordEncoder passwordEncoder) {
+    public DataInitializer(UserRepository userRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository,
+                           FavoriteRepository favoriteRepository, PasswordEncoder passwordEncoder,  MessagesRepository messagesRepository) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.propertyImageRepository = propertyImageRepository;
         this.favoriteRepository = favoriteRepository;
         this.passwordEncoder = passwordEncoder;
+        this.messagesRepository = messagesRepository;
     }
 
     @PostConstruct
     public void init() {
-        if (userRepository.count() == 0 && propertyRepository.count() == 0 && propertyImageRepository.count() == 0 && favoriteRepository.count() == 0) {
+        if (userRepository.count() == 0 && propertyRepository.count() == 0 && propertyImageRepository.count() == 0 && favoriteRepository.count() == 0 && messagesRepository.count() ==0) {
 
             User u1 = new User("Buyer",
                     "B",
@@ -164,8 +162,6 @@ public class DataInitializer {
             List<Property> properties = List.of(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17);
             propertyRepository.saveAll(properties);
 
-            // This parses the PropertyImage objects from static/images/PropertyImages and adds them to the repo with the correct property_id (property).
-            // (you need to put PropertyImage folder in resources/static/images)
             try {
 
                 File mainDir = new File("src/main/resources/static/images/PropertyImages");
@@ -200,6 +196,13 @@ public class DataInitializer {
 
             favoriteRepository.save(f);
             System.out.println("Initial favorites, inserted successfully");
+
+            Messages messages = new Messages();
+            messages.setProperty(p1);
+            messages.setMessage("Hello, this is a test");
+            messages.setTimestamp(LocalDateTime.now());
+            messages.setSender(u1);
+            messagesRepository.save(messages);
         }
         else {
 

@@ -1,5 +1,5 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   font-family: Arial, sans-serif;
     background-color: #f5f5f5;
     margin: 0;
     padding: 0;
@@ -7,6 +7,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background-image:  url('../images/house-bg.png');
 }
 
 .login-container {
@@ -82,7 +83,7 @@ button:hover {
 
 .password-requirements {
     font-size: 0.8rem;
-    color: #666;
+    color: #650;
     margin-top: 0.25rem;
 }
 
@@ -98,5 +99,15 @@ button:hover {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.footer{
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    height: 100px;
+    position: absolute;
+    text-align: left;
+    bottom: 0;
+    color: rgba(85, 85, 85, 0.47);
 }
 

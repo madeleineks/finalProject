@@ -5,33 +5,33 @@ admin@email.com/admin123
 
 ## Contribution Summary
 - config
-  - CustomAccessDeniedHandler.java: 
-  - CustomAuthenticationEntryPoint.java: 
-  - SecurityConfig.java
+  - CustomAccessDeniedHandler.java: Hamzeh     
+  - CustomAuthenticationEntryPoint.java: Hamzeh  
+  - SecurityConfig.java: Joe and Hamzeh
 - controller
   - UserController.java: All
 - dtos
-  - ApiExceptionDto.java: 
+  - BadParamaterException: Hamzeh
+  - AlreadyExistsException: Hamzeh
   - JwtResponse.java: 
-  - LoginRequest.java: 
 - entities
   - Property.java: Hamzeh & Zach
   - Favorite.java: Zach 
-  - PropertyImage.java: Hamzeh & Zach
+  - PropertyImage.java: Hamzeh 
   - Messages: Hamzeh
-  - User.java: Hamzeh, Zach, Madeleine (support)
+  - User.java: ALL
 - exceptions
   - NotFoundException.java: Madeleine 
   - UserAlreadyExistsException.java: Madeleine
 - initializer
   - DataInitializer.java: Zach & Hamzeh 
 - jwt
-  - JwtUtil.java: 
+  - JwtUtil.java: Joe
 - repository
   - FavoriteRepository.java: Zach
   - PropertyImageRepository.java: Hamzeh
   - PropertyRepository.java: Hamzeh & Zach
-  - UserRepository.java: ALL
+  - UserRepository.java: Hamzeh and Madeleine
   - MessagesRepository: Hamzeh
 - service
   - AuthService: Hamzeh
@@ -44,7 +44,7 @@ admin@email.com/admin123
   - UserService.java: All
   - UserServiceImpl.java: All
   - MessageServices: Hamzeh
-  - FavoritesServices: Zach
+  - MessagesServiceImpl: Hamzeh
 - utils
   - CurrentUserContext.java: Hamzeh
   - GlobalRateLimiterFilter.java: Hamzeh

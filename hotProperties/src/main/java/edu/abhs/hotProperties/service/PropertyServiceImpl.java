@@ -70,6 +70,7 @@ public class PropertyServiceImpl implements PropertyService {
     public void deletePropertyImage(Property property, long imageId) {
         PropertyImage propertyImage =  propertyImageRepository.findById(imageId);
         property.removePropertyImage(propertyImage);
+        propertyImageRepository.delete(propertyImage);
         propertyRepository.save(property);
     }
 

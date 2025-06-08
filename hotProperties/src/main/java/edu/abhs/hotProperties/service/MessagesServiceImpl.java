@@ -47,7 +47,16 @@ public class MessagesServiceImpl implements  MessagesService {
         messagesRepository.save(messages);
     }
 
-
+    @Override
+    public boolean propertyHasMessages(Property property) {
+        List<Messages> messageList = property.getMessageList();
+        for (Messages messages : messageList) {
+            if (messages != null) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 }

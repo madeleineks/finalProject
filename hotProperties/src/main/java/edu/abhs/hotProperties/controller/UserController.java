@@ -190,7 +190,7 @@ public class UserController {
     @PreAuthorize("hasRole('AGENT')")
     @PostMapping("/deleteProperty")
     public String deleteProperty(@RequestParam("id") long id, Model model) {
-        if (propertyService.getPropertyById(id).getMessageList() != null) {
+        if (messagesService.propertyHasMessages(propertyService.getPropertyById(id))) {
             model.addAttribute("user", authService.getCurrentUser());
             model.addAttribute("fail_message", "Warning! You have messages for this property.");
             return "manage_properties";
@@ -199,8 +199,6 @@ public class UserController {
 
         propertyService.deletePropertyImages(property);
         userService.removeProperty(property);
-
-
         propertyService.deleteProperty(property);
 
         model.addAttribute("successMessage", "Property removed successfully");

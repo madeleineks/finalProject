@@ -13,7 +13,7 @@ admin@email.com/admin123
 - dtos
   - BadParamaterException: Hamzeh
   - AlreadyExistsException: Hamzeh
-  - JwtResponse.java: 
+  - JwtResponse.java: Joe & Hamzeh
 - entities
   - Property.java: Hamzeh & Zach
   - Favorite.java: Zach 
